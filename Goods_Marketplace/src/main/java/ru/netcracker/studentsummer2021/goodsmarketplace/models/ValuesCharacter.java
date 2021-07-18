@@ -14,11 +14,41 @@ public class ValuesCharacter {
     @Column(name = "val")
     private String value;
 
-    @Id
     @Column(name = "charact_id")
     private Long charact;
 
-    @Id
     @Column(name = "category_id")
     private Long category;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public Long getCharact() {
+        return charact;
+    }
+
+    public void setCharact(Long charact) {
+        this.charact = charact;
+    }
+
+    public Long getCategory() {
+        return category;
+    }
+
+    public void setCategory(Long category) {
+        this.category = category;
+    }
 }

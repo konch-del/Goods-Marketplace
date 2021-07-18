@@ -18,7 +18,38 @@ public class PictureProduct {
     @Column(name = "date_created")
     private GregorianCalendar dateCreated;
 
-    @Id
     @Column(name = "product_id")
     private Long product;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getPicture() {
+        return picture;
+    }
+
+    public void setPicture(Long picture) {
+        this.picture = picture;
+    }
+
+    public GregorianCalendar getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(GregorianCalendar dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Long getProduct() {
+        return product;
+    }
+
+    public void setProduct(Long product) {
+        this.product = product;
+    }
 }

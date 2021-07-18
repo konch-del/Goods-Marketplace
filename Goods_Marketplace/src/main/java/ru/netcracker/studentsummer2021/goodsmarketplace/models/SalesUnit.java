@@ -30,11 +30,81 @@ public class SalesUnit {
     @Column(name = "modified_date")
     private GregorianCalendar modifiedDate;
 
-    @Id
     @Column(name = "shop_id")
     private Long shop;
 
-    @Id
     @Column(name = "product_id")
     private Long product;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    public float getShipCost() {
+        return shipCost;
+    }
+
+    public void setShipCost(float shipCost) {
+        this.shipCost = shipCost;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public GregorianCalendar getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(GregorianCalendar dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public GregorianCalendar getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(GregorianCalendar modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public Long getShop() {
+        return shop;
+    }
+
+    public void setShop(Long shop) {
+        this.shop = shop;
+    }
+
+    public Long getProduct() {
+        return product;
+    }
+
+    public void setProduct(Long product) {
+        this.product = product;
+    }
 }

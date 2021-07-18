@@ -10,18 +10,36 @@ import javax.persistence.Table;
 public class ProductValuesCharacter {
 
     @Id
+    @Column(name = "pvc_id")
+    private Long id;
+
     @Column(name = "product_id")
     private Long product;
 
-    @Id
     @Column(name = "vc_id")
     private Long value;
 
-    @Id
-    @Column(name = "charact_id")
-    private Long characteristic;
+    public Long getId() {
+        return id;
+    }
 
-    @Id
-    @Column(name = "category_id")
-    private Long category;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getProduct() {
+        return product;
+    }
+
+    public void setProduct(Long product) {
+        this.product = product;
+    }
+
+    public Long getValue() {
+        return value;
+    }
+
+    public void setValue(Long value) {
+        this.value = value;
+    }
 }

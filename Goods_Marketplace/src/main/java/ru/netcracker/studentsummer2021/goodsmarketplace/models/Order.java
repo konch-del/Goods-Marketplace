@@ -47,4 +47,108 @@ public class Order {
 
     @Column(name = "product_id")
     private Long product;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getMark() {
+        return mark;
+    }
+
+    public void setMark(int mark) {
+        this.mark = mark;
+    }
+
+    public GregorianCalendar getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(GregorianCalendar deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getComm() {
+        return comm;
+    }
+
+    public void setComm(String comm) {
+        this.comm = comm;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public GregorianCalendar getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(GregorianCalendar dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public GregorianCalendar getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(GregorianCalendar modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public GregorianCalendar getModDateOS() {
+        return modDateOS;
+    }
+
+    public void setModDateOS(GregorianCalendar modDateOS) {
+        this.modDateOS = modDateOS;
+    }
+
+    public Long getUser() {
+        return user;
+    }
+
+    public void setUser(Long user) {
+        this.user = user;
+    }
+
+    public Long getSu() {
+        return su;
+    }
+
+    public void setSu(Long su) {
+        this.su = su;
+    }
+
+    public Long getShop() {
+        return shop;
+    }
+
+    public void setShop(Long shop) {
+        this.shop = shop;
+    }
+
+    public Long getProduct() {
+        return product;
+    }
+
+    public void setProduct(Long product) {
+        this.product = product;
+    }
 }

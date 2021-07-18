@@ -1,7 +1,7 @@
 package ru.netcracker.studentsummer2021.goodsmarketplace.repo;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.Manufacturer;
 
-public interface ManufacturerRepository extends CrudRepository<Manufacturer, Long> {
+public interface ManufacturerRepository extends JpaRepository<Manufacturer, Long> {
 }
