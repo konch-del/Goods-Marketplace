@@ -1,7 +1,9 @@
 package ru.netcracker.studentsummer2021.goodsmarketplace.service.manufacturer;
 
+import org.springframework.web.multipart.MultipartFile;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.manufacturer.ManufacturerDTO;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ManufacturerService {
@@ -16,7 +18,11 @@ public interface ManufacturerService {
 
     void delete(Long manufacturerId);
 
-    void loadPicture();
+    String loadPicture(MultipartFile file, Long manufacturerId) throws IOException;
 
-    void deletePicture();
+    void deletePicture(Long manufacturerId);
+
+    List<ManufacturerDTO> search(String name);
+
+    byte[] getPicture(Long manufacturerId) throws IOException;
 }
