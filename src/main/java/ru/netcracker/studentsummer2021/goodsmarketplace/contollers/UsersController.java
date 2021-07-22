@@ -29,7 +29,7 @@ public class UsersController {
      * @param usersDto JSON-обект пользователя
      * @return
      */
-    @PostMapping("/save")
+    @PutMapping("/save")
     public ResponseEntity<?> saveUsers(@RequestBody UsersAdminDTO usersDto) {
         return usersService.saveUser(usersDto);
     }

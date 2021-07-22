@@ -30,7 +30,7 @@ public class ShopsController {
      * @param shopsPublicDTO JSON-объект магазина
      * @return
      */
-    @PostMapping("/save")
+    @PutMapping("/save")
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> saveShop(@RequestBody ShopsPublicDTO shopsPublicDTO){
         return shopsService.saveShop(shopsPublicDTO);

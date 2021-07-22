@@ -1,9 +1,7 @@
 package ru.netcracker.studentsummer2021.goodsmarketplace.contollers;
 
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,12 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.manufacturer.ManufacturerDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.service.manufacturer.ManufacturerService;
-
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.util.List;
 
 /**
  * Контроллер для REST-API производителя
@@ -34,7 +27,7 @@ public class ManufacturerController {
         this.manufacturerService = manufacturerService;
     }
 
-    @PostMapping("/save")
+    @PutMapping("/save")
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> save(@RequestBody ManufacturerDTO manufacturerDTO){
         return manufacturerService.save(manufacturerDTO);

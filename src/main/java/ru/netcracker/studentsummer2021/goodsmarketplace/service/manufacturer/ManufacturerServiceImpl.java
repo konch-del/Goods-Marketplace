@@ -13,7 +13,6 @@ import ru.netcracker.studentsummer2021.goodsmarketplace.repo.ManufacturerReposit
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;

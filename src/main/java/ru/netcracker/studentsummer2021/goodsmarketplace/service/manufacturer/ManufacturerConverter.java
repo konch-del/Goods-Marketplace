@@ -5,10 +5,6 @@ import org.springframework.stereotype.Component;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.manufacturer.ManufacturerDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.Manufacturer;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
 @Component
 public class ManufacturerConverter {
     @Value("${upload.path}")
