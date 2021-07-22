@@ -1,5 +1,6 @@
 package ru.netcracker.studentsummer2021.goodsmarketplace.service.manufacturer;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.manufacturer.ManufacturerDTO;
 
@@ -8,21 +9,21 @@ import java.util.List;
 
 public interface ManufacturerService {
 
-    void save(ManufacturerDTO manufacturerDTO);
+    ResponseEntity<?> save(ManufacturerDTO manufacturerDTO);
 
-    ManufacturerDTO getById(Long manufacturerId);
+    ResponseEntity<?> getById(Long manufacturerId);
 
-    List<ManufacturerDTO> getAll();
+    ResponseEntity<?> getAll();
 
-    void changeInfo(ManufacturerDTO manufacturerDTO);
+    ResponseEntity<?> changeInfo(ManufacturerDTO manufacturerDTO);
 
-    void delete(Long manufacturerId);
+    ResponseEntity<?> delete(Long manufacturerId);
 
-    String loadPicture(MultipartFile file, Long manufacturerId) throws IOException;
+    ResponseEntity<?> loadPicture(MultipartFile file, Long manufacturerId) throws IOException;
 
-    void deletePicture(Long manufacturerId);
+    ResponseEntity<?> deletePicture(Long manufacturerId);
 
-    List<ManufacturerDTO> search(String name);
+    ResponseEntity<?> search(String name);
 
-    byte[] getPicture(Long manufacturerId) throws IOException;
+    ResponseEntity<?> getPicture(Long manufacturerId) throws IOException;
 }

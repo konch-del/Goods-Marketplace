@@ -2,6 +2,8 @@ package ru.netcracker.studentsummer2021.goodsmarketplace.service.manufacturer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.manufacturer.ManufacturerDTO;
@@ -33,42 +35,62 @@ public class ManufacturerServiceImpl implements ManufacturerService{
     }
 
     @Override
-    public void save(ManufacturerDTO manufacturerDTO) {
-        manufacturerRepository.save(manufacturerConverter.fromDTOToManufacturer(manufacturerDTO));
+    public ResponseEntity<?> save(ManufacturerDTO manufacturerDTO) {
+        if(manufacturerDTO.getName().equals("") || manufacturerDTO.getDesc().equals("")){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(manufacturerRepository.save(manufacturerConverter.fromDTOToManufacturer(manufacturerDTO)), HttpStatus.CREATED);
     }
 
     @Override
-    public ManufacturerDTO getById(Long manufacturerId) {
-        return manufacturerConverter.fromManufacturerToDTO(manufacturerRepository.getById(manufacturerId));
+    public ResponseEntity<?> getById(Long manufacturerId) {
+        if(manufacturerRepository.findById(manufacturerId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(manufacturerConverter.fromManufacturerToDTO(manufacturerRepository.getById(manufacturerId)), HttpStatus.OK);
     }
 
     @Override
-    public List<ManufacturerDTO> getAll() {
-        return manufacturerRepository.findAll()
+    public ResponseEntity<?> getAll() {
+        return new ResponseEntity<>(manufacturerRepository.findAll()
                 .stream()
                 .map(manufacturerConverter::fromManufacturerToDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @Override
-    public void changeInfo(ManufacturerDTO manufacturerDTO) {
+    public ResponseEntity<?> changeInfo(ManufacturerDTO manufacturerDTO) {
+        if(manufacturerRepository.findById(manufacturerDTO.getId()).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Manufacturer manufacturer = manufacturerRepository.getById(manufacturerDTO.getId());
-        if(manufacturerDTO.getName() != null){
+        if(!manufacturerDTO.getName().equals("") && !manufacturerDTO.getDesc().equals("")){
             manufacturer.setName(manufacturerDTO.getName());
-        }
-        if(manufacturerDTO.getDesc() != null){
             manufacturer.setDesc(manufacturerDTO.getDesc());
+            return new ResponseEntity<>(manufacturerRepository.save(manufacturer), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        manufacturerRepository.save(manufacturer);
     }
 
     @Override
-    public void delete(Long manufacturerId) {
-        manufacturerRepository.deleteById(manufacturerId);
+    public ResponseEntity<?> delete(Long manufacturerId) {
+        if(manufacturerRepository.findById(manufacturerId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else {
+            manufacturerRepository.deleteById(manufacturerId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
     }
 
     @Override
-    public String loadPicture(MultipartFile file, Long manufacturerId) throws IOException {
+    public ResponseEntity<?> loadPicture(MultipartFile file, Long manufacturerId) throws IOException {
+        if(manufacturerRepository.findById(manufacturerId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if(file.isEmpty() || file.getSize() > 2200000){
+            return new ResponseEntity<>(HttpStatus.PAYLOAD_TOO_LARGE);
+        }
         File upload = new File(path);
         if(!upload.exists()){
             upload.mkdir();
@@ -76,29 +98,43 @@ public class ManufacturerServiceImpl implements ManufacturerService{
         String name = UUID.randomUUID().toString() + "." + file.getOriginalFilename();
         file.transferTo(new File(upload.getAbsolutePath() + "/" + name));
         manufacturerRepository.loadPicture(name, manufacturerId);
-        return name;
+        return new ResponseEntity<>(name, HttpStatus.OK);
     }
 
     @Override
-    public void deletePicture(Long manufacturerId) {
+    public ResponseEntity<?> deletePicture(Long manufacturerId) {
+        if(manufacturerRepository.findById(manufacturerId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         File upload = new File(path);
         File pic = new File(upload.getAbsolutePath() + "/" + manufacturerRepository.findById(manufacturerId).get().getPicture());
-        pic.delete();
-        manufacturerRepository.deletePicture(manufacturerId);
+        if(pic.exists()) {
+            pic.delete();
+            manufacturerRepository.deletePicture(manufacturerId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @Override
-    public List<ManufacturerDTO> search(String name){
-        return manufacturerRepository.search(name.toUpperCase(Locale.ROOT))
+    public ResponseEntity<?> search(String name){
+        return new ResponseEntity<>(manufacturerRepository.search(name.toUpperCase(Locale.ROOT))
                 .stream()
                 .map(manufacturerConverter::fromManufacturerToDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), HttpStatus.OK);
     };
 
     @Override
-    public byte[] getPicture(Long manufacturerId) throws IOException {
+    public ResponseEntity<?> getPicture(Long manufacturerId){
         File upload = new File(path);
+        if(manufacturerRepository.findById(manufacturerId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         File file = new File(upload.getAbsolutePath() + "/" + manufacturerRepository.findById(manufacturerId).get().getPicture());
-        return Files.readAllBytes(file.toPath());
+        try {
+            return new ResponseEntity<>(Files.readAllBytes(file.toPath()), HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

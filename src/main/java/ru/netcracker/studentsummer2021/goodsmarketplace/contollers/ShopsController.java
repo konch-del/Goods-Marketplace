@@ -32,9 +32,8 @@ public class ShopsController {
      */
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<Void> saveShop(@RequestBody ShopsPublicDTO shopsPublicDTO){
-        shopsService.saveShop(shopsPublicDTO);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> saveShop(@RequestBody ShopsPublicDTO shopsPublicDTO){
+        return shopsService.saveShop(shopsPublicDTO);
     }
 
     /**
@@ -44,9 +43,8 @@ public class ShopsController {
      */
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<Void> deleteShop(@RequestParam Long id){
-        shopsService.deleteShop(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteShop(@RequestParam Long id){
+        return shopsService.deleteShop(id);
     }
 
     /**
@@ -55,7 +53,7 @@ public class ShopsController {
      * @return полную информацию о магазинах для администраторов, нескрытую для пользователей
      */
     @GetMapping("/findAll")
-    public List<ShopsDTO> findAll(@AuthenticationPrincipal User user){
+    public ResponseEntity<?> findAll(@AuthenticationPrincipal User user){
         return shopsService.findAll(user);
     }
 
@@ -66,7 +64,7 @@ public class ShopsController {
      * @return полную информацию о магазине для администраторов, нескрытую для пользователей
      */
     @GetMapping("/findById")
-    public ShopsDTO findById(@AuthenticationPrincipal User user, @RequestParam Long id){
+    public ResponseEntity<?> findById(@AuthenticationPrincipal User user, @RequestParam Long id){
         return shopsService.findById(user, id);
     }
 
@@ -77,9 +75,8 @@ public class ShopsController {
      * @return
      */
     @PostMapping("/changeInfo")
-    public ResponseEntity<Void> changeInfo(@AuthenticationPrincipal User user, @RequestBody ShopsPublicDTO shopsPublicDTO){
-        shopsService.changeInfo(user, shopsPublicDTO);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> changeInfo(@AuthenticationPrincipal User user, @RequestBody ShopsPublicDTO shopsPublicDTO){
+        return shopsService.changeInfo(user, shopsPublicDTO);
     }
 
 }

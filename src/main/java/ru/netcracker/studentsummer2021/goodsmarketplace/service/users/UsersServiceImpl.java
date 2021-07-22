@@ -1,6 +1,8 @@
 package ru.netcracker.studentsummer2021.goodsmarketplace.service.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,18 +10,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.users.UsersAdminDTO;
-import ru.netcracker.studentsummer2021.goodsmarketplace.dto.users.UsersDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.users.UsersPrivatDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.Users;
+import ru.netcracker.studentsummer2021.goodsmarketplace.repo.ShopRepository;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.UsersRepository;
 import ru.netcracker.studentsummer2021.goodsmarketplace.security.UserSecurity;
 
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static java.util.Objects.isNull;
 
 /**
  * Класс, реализуюющий бизнес-логику
@@ -29,11 +28,13 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
     private final UsersRepository usersRepository;
     private final UsersConverter usersConverter;
+    private final ShopRepository shopRepository;
 
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository, UsersConverter usersConverter) {
+    public UsersServiceImpl(UsersRepository usersRepository, UsersConverter usersConverter, ShopRepository shopRepository) {
         this.usersRepository = usersRepository;
         this.usersConverter = usersConverter;
+        this.shopRepository = shopRepository;
     }
 
     /**
@@ -42,29 +43,29 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @return сохраненного пользователя
      */
     @Override
-    public UsersPrivatDTO saveUser(UsersAdminDTO userDTO) {
-        validateUserDto(userDTO);
+    public ResponseEntity<?> saveUser(UsersAdminDTO userDTO) {
+        if(validateUserDto(userDTO)){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Users user = usersConverter.fromUserDtoToUser(userDTO);
         user.setPassword(new BCryptPasswordEncoder(12).encode(userDTO.getPassword()));
         user.setAccountType(userDTO.getAccountType());
         user.setDateOfCreation(new GregorianCalendar());
         user.setLastLoginDate(new GregorianCalendar());
         Users savedUser = usersRepository.save(user);
-        return usersConverter.fromUserToUserDto(savedUser);
+        return new ResponseEntity<>(usersConverter.fromUserToUserDto(savedUser), HttpStatus.CREATED);
     }
 
     /**
      * Валидирует данные пользователя
      * @param usersDto объект получений при запросе
-     * @throws NullPointerException
      */
-    private void validateUserDto(UsersPrivatDTO usersDto) throws NullPointerException {
-        if (isNull(usersDto)) {
-            throw new NullPointerException();
-        }
-        if (isNull(usersDto.getUsername()) || usersDto.getUsername().isEmpty()) {
-            throw new NullPointerException();
-        }
+    private boolean validateUserDto(UsersAdminDTO usersDto){
+        if (usersDto.getUsername().equals("") || usersDto.getEmail().equals("")
+            || usersDto.getPassword().equals("") || usersDto.getFcs().equals("")
+            || usersDto.getCity().equals("") || usersDto.getPhoneNumber().equals("")) {
+            return false;
+        }else return true;
     }
 
     /**
@@ -72,8 +73,12 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @param userId id удаляемого пользователя
      */
     @Override
-    public void deleteUser(Long userId) {
+    public ResponseEntity<?> deleteUser(Long userId) {
+        if(usersRepository.findById(userId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         usersRepository.deleteById(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -82,12 +87,12 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @return чувствиетльную информацию о пользователе
      */
     @Override
-    public UsersPrivatDTO findByUsername(String login) {
+    public ResponseEntity<?> findByUsername(String login) {
         Users users = usersRepository.findByUsername(login);
         if (users != null) {
-            return usersConverter.fromUserToUserDto(users);
+            return new ResponseEntity<>(usersConverter.fromUserToUserDto(users), HttpStatus.OK);
         }
-        return null;
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -95,11 +100,11 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @return чувствиетльную информацию о пользователях
      */
     @Override
-    public List<UsersPrivatDTO> findAll() {
-        return usersRepository.findAll()
+    public ResponseEntity<?> findAll() {
+        return new ResponseEntity<>(usersRepository.findAll()
                 .stream()
                 .map(usersConverter::fromUserToUserDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     /**
@@ -108,9 +113,12 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @return чувствиетльную информацию о пользователе
      */
     @Override
-    public UsersPrivatDTO findById(Long userId) {
+    public ResponseEntity<?> findById(Long userId) {
+        if(usersRepository.findById(userId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Optional<Users> users = usersRepository.findById(userId);
-        return users.map(usersConverter::fromUserToUserDto).orElse(null);
+        return new ResponseEntity<>(users.map(usersConverter::fromUserToUserDto).orElse(null), HttpStatus.OK);
     }
 
     /**
@@ -119,8 +127,12 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @param active статус активации
      */
     @Override
-    public void changeActivation(Long userId, Integer active) {
+    public ResponseEntity<?> changeActivation(Long userId, Integer active) {
+        if(usersRepository.findById(userId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         usersRepository.changeActiv(userId, active);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -128,8 +140,10 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @param userDTO объект получений при запросе
      */
     @Override
-    public void changeInfo(UsersPrivatDTO userDTO) {
-        validateUserDto(userDTO);
+    public ResponseEntity<?> changeInfo(UsersPrivatDTO userDTO) {
+        if(usersRepository.findById(userDTO.getId()).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Users user = usersRepository.findById(userDTO.getId()).get();
         if(userDTO.getEmail() != null){
             user.setEmail(userDTO.getEmail());
@@ -146,7 +160,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         if(userDTO.getFcs() != null){
             user.setFcs(userDTO.getFcs());
         }
-        usersRepository.save(user);
+        return new ResponseEntity<>(usersRepository.save(user), HttpStatus.OK);
     }
 
     /**
@@ -156,10 +170,13 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @param newEmail новая почта
      */
     @Override
-    public void changeEmail(User activeUser, String password, String newEmail) {
+    public ResponseEntity<?> changeEmail(User activeUser, String password, String newEmail) {
         Users user = usersRepository.findByUsername(activeUser.getUsername());
         if(user.getPassword().equals(password)){
             usersRepository.changeEmail(user.getId(), newEmail);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -170,10 +187,13 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @param password2
      */
     @Override
-    public void changePassword(User activeUser, String password, String password2) {
+    public ResponseEntity<?> changePassword(User activeUser, String password, String password2, String password3) {
         Users user = usersRepository.findByUsername(activeUser.getUsername());
         if(password.equals(password2) && password.equals(user.getPassword())){
-            usersRepository.changePass(user.getId(), password);
+            usersRepository.changePass(user.getId(), password3);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -183,8 +203,12 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @param shopId id магазина
      */
     @Override
-    public void changeShop(Long userId, Long shopId) {
+    public ResponseEntity<?> changeShop(Long userId, Long shopId) {
+        if(usersRepository.findById(userId).isEmpty() || shopRepository.findById(shopId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         usersRepository.changeShop(userId, shopId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -194,15 +218,18 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @return информации о пользователе в зависимости от прав
      */
     @Override
-    public UsersDTO getUserById(User activeUser, Long userId){
+    public ResponseEntity<?> getUserById(User activeUser, Long userId){
+        if(usersRepository.findById(userId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Users user = usersRepository.findById(userId).get();
         if(activeUser.getAuthorities().contains(new SimpleGrantedAuthority("admin"))){
-            return usersConverter.fromUserToUserAdmin(user);
+            return new ResponseEntity<>(usersConverter.fromUserToUserAdmin(user), HttpStatus.OK);
         }
         if(usersRepository.findByUsername(activeUser.getUsername()).getId().equals(userId)){
-            return usersConverter.fromUserToUserDto(user);
+            return new ResponseEntity<>(usersConverter.fromUserToUserDto(user), HttpStatus.OK);
         }else {
-            return usersConverter.fromUserToUserPublic(user);
+            return new ResponseEntity<>(usersConverter.fromUserToUserPublic(user), HttpStatus.OK);
         }
     }
 

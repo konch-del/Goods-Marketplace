@@ -30,7 +30,7 @@ public class UsersController {
      * @return
      */
     @PostMapping("/save")
-    public UsersPrivatDTO saveUsers(@RequestBody UsersAdminDTO usersDto) {
+    public ResponseEntity<?> saveUsers(@RequestBody UsersAdminDTO usersDto) {
         return usersService.saveUser(usersDto);
     }
 
@@ -40,7 +40,7 @@ public class UsersController {
      */
     @GetMapping("/findAll")
     @PreAuthorize("hasAuthority('admin')")
-    public List<UsersPrivatDTO> findAllUsers() {
+    public ResponseEntity<?> findAllUsers() {
         return usersService.findAll();
     }
 
@@ -51,7 +51,7 @@ public class UsersController {
      */
     @GetMapping("/findByLogin")
     @PreAuthorize("hasAuthority('user')")
-    public UsersPrivatDTO findByLogin(@RequestParam String username) {
+    public ResponseEntity<?> findByLogin(@RequestParam String username) {
         return usersService.findByUsername(username);
     }
 
@@ -62,9 +62,8 @@ public class UsersController {
      */
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<Void> deleteUsers(@RequestParam Long id) {
-        usersService.deleteUser(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteUsers(@RequestParam Long id) {
+        return usersService.deleteUser(id);
     }
 
     /**
@@ -74,9 +73,8 @@ public class UsersController {
      */
     @PostMapping("/changeinfo")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<Void> changeUser(@RequestBody UsersPrivatDTO usersDto){
-        usersService.changeInfo(usersDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> changeUser(@RequestBody UsersPrivatDTO usersDto){
+        return usersService.changeInfo(usersDto);
     }
 
     /**
@@ -87,9 +85,8 @@ public class UsersController {
      */
     @PostMapping("/changeActivity")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<Void> changeActiv(@RequestParam Long id, @RequestParam Integer activ){
-        usersService.changeActivation(id, activ);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> changeActiv(@RequestParam Long id, @RequestParam Integer activ){
+        return usersService.changeActivation(id, activ);
     }
 
     /**
@@ -100,9 +97,8 @@ public class UsersController {
      */
     @PostMapping("/changeShop")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<Void> changeShop(@RequestParam Long id, @RequestParam Long shop){
-        usersService.changeShop(id, shop);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> changeShop(@RequestParam Long id, @RequestParam Long shop){
+        return usersService.changeShop(id, shop);
     }
 
     /**
@@ -114,9 +110,8 @@ public class UsersController {
      */
     @PostMapping("/changePass")
     @PreAuthorize("hasAuthority('user')")
-    public ResponseEntity<Void> changePass(@AuthenticationPrincipal User user, @RequestParam String pass, @RequestParam String pass2){
-        usersService.changePassword(user, pass, pass2);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> changePass(@AuthenticationPrincipal User user, @RequestParam String pass, @RequestParam String pass2, @RequestParam String pass3){
+        return usersService.changePassword(user, pass, pass2, pass3);
     }
 
     /**
@@ -128,9 +123,8 @@ public class UsersController {
      */
     @PostMapping("/changeEmail")
     @PreAuthorize("hasAuthority('user')")
-    public ResponseEntity<Void> changeEmail(@AuthenticationPrincipal User user, @RequestParam String pass, @RequestParam String email){
-        usersService.changeEmail(user, pass, email);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> changeEmail(@AuthenticationPrincipal User user, @RequestParam String pass, @RequestParam String email){
+        return usersService.changeEmail(user, pass, email);
     }
 
     /**
@@ -141,7 +135,7 @@ public class UsersController {
      */
     @GetMapping("/getUserById")
     @PreAuthorize("hasAnyAuthority('user', 'admin')")
-    public UsersDTO getUserById(@AuthenticationPrincipal User user, @RequestParam Long id){
+    public ResponseEntity<?> getUserById(@AuthenticationPrincipal User user, @RequestParam Long id){
         return usersService.getUserById(user, id);
     }
 }

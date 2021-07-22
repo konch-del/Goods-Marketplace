@@ -1,5 +1,6 @@
 package ru.netcracker.studentsummer2021.goodsmarketplace.service.users;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.users.UsersAdminDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.users.UsersDTO;
@@ -9,26 +10,26 @@ import java.util.List;
 
 public interface UsersService {
 
-    UsersPrivatDTO saveUser(UsersAdminDTO userDTO);
+    ResponseEntity<?> saveUser(UsersAdminDTO userDTO);
 
-    void deleteUser(Long userId);
+    ResponseEntity<?> deleteUser(Long userId);
 
-    UsersPrivatDTO findByUsername(String login);
+    ResponseEntity<?> findByUsername(String login);
 
-    List<UsersPrivatDTO> findAll();
+    ResponseEntity<?> findAll();
 
-    UsersPrivatDTO findById(Long userId);
+    ResponseEntity<?> findById(Long userId);
 
-    void changeActivation(Long userId, Integer active);
+    ResponseEntity<?> changeActivation(Long userId, Integer active);
 
-    void changeInfo(UsersPrivatDTO userDTO);
+    ResponseEntity<?> changeInfo(UsersPrivatDTO userDTO);
 
-    void changeEmail(User activeUser, String password, String newEmail);
+    ResponseEntity<?> changeEmail(User activeUser, String password, String newEmail);
 
-    void changePassword(User activeUser, String password, String password2);
+    ResponseEntity<?> changePassword(User activeUser, String password, String password2, String password3);
 
-    void changeShop(Long userId, Long shopId);
+    ResponseEntity<?> changeShop(Long userId, Long shopId);
 
-    UsersDTO getUserById(User activeUser, Long userId);
+    ResponseEntity<?> getUserById(User activeUser, Long userId);
 
 }

@@ -1,6 +1,8 @@
 package ru.netcracker.studentsummer2021.goodsmarketplace.service.shops;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -35,8 +37,11 @@ public class ShopsServiceImpl implements ShopsService {
      * @param shopDTO объект получений при запросе
      */
     @Override
-    public void saveShop(ShopsPublicDTO shopDTO) {
-        shopRepository.save(shopsConverter.fromShopPublicToShop(shopDTO));
+    public ResponseEntity<?> saveShop(ShopsPublicDTO shopDTO) {
+        if(shopDTO.getName().equals("") || shopDTO.getDesc().equals("")){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(shopRepository.save(shopsConverter.fromShopPublicToShop(shopDTO)), HttpStatus.CREATED);
     }
 
     /**
@@ -44,8 +49,12 @@ public class ShopsServiceImpl implements ShopsService {
      * @param shopId id магазина получений при запросе
      */
     @Override
-    public void deleteShop(Long shopId) {
+    public ResponseEntity<?> deleteShop(Long shopId) {
+        if(shopRepository.findById(shopId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         shopRepository.deleteById(shopId);
+        return new ResponseEntity<>( HttpStatus.OK);
     }
 
     /**
@@ -54,17 +63,17 @@ public class ShopsServiceImpl implements ShopsService {
      * @return полную информацию о магазинах для администраторов, нескрытую для пользователей
      */
     @Override
-    public List<ShopsDTO> findAll(User activeUser) {
+    public ResponseEntity<?> findAll(User activeUser) {
         if(activeUser.getAuthorities().contains(new SimpleGrantedAuthority("admin"))){
-            return shopRepository.findAll()
+            return new ResponseEntity<>(shopRepository.findAll()
                     .stream()
                     .map(shopsConverter::fromShopToShopAdmin)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList()), HttpStatus.OK);
         }else{
-            return shopRepository.findAll()
+            return new ResponseEntity<>(shopRepository.findAll()
                     .stream()
                     .map(shopsConverter::fromShopToShopPublic)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList()), HttpStatus.OK);
         }
     }
 
@@ -75,11 +84,14 @@ public class ShopsServiceImpl implements ShopsService {
      * @return полную информацию о магазине для администраторов, нескрытую для пользователей
      */
     @Override
-    public ShopsDTO findById(User activeUser, Long shopId) {
+    public ResponseEntity<?> findById(User activeUser, Long shopId) {
+        if(shopRepository.findById(shopId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         if(activeUser.getAuthorities().contains(new SimpleGrantedAuthority("admin"))){
-            return shopsConverter.fromShopToShopAdmin(shopRepository.getById(shopId));
+            return new ResponseEntity<>(shopsConverter.fromShopToShopAdmin(shopRepository.getById(shopId)), HttpStatus.OK);
         }else {
-            return shopsConverter.fromShopToShopPublic(shopRepository.getById(shopId));
+            return new ResponseEntity<>(shopsConverter.fromShopToShopPublic(shopRepository.getById(shopId)), HttpStatus.OK);
         }
     }
 
@@ -89,37 +101,28 @@ public class ShopsServiceImpl implements ShopsService {
      * @param shopDTO объект получений при запросе
      */
     @Override
-    public void changeInfo(User activeUser, ShopsPublicDTO shopDTO) {
+    public ResponseEntity<?> changeInfo(User activeUser, ShopsPublicDTO shopDTO) {
+        if(shopRepository.findById(shopDTO.getId()).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Shop shop = shopRepository.getById(shopDTO.getId());
+        if(shopDTO.getEmail() != null) {
+            shop.setEmail(shopDTO.getEmail());
+        }
+        if(shopDTO.getPhoneNumber() != null) {
+            shop.setPhoneNumber(shopDTO.getPhoneNumber());
+        }
+        if(shopDTO.getWorkTime() != null) {
+            shop.setWorkTime(shopDTO.getWorkTime());
+        }
+        if(shopDTO.getAddress() != null) {
+            shop.setAddress(shopDTO.getAddress());
+        }
         if(activeUser.getAuthorities().contains(new SimpleGrantedAuthority("admin"))){
-            Shop shop = shopRepository.getById(shopDTO.getId());
-            if(shopDTO.getEmail() != null) {
-                shop.setEmail(shopDTO.getEmail());
-            }
-            if(shopDTO.getPhoneNumber() != null) {
-                shop.setPhoneNumber(shopDTO.getPhoneNumber());
-            }
-            if(shopDTO.getWorkTime() != null) {
-                shop.setWorkTime(shopDTO.getWorkTime());
-            }
-            if(shopDTO.getAddress() != null) {
-                shop.setAddress(shopDTO.getAddress());
-            }
-            shopRepository.save(shop);
+            return new ResponseEntity<>(shopRepository.save(shop), HttpStatus.OK);
         }else if(usersRepository.findByUsername(activeUser.getUsername()).getShopId().equals(shopDTO.getId())){
-                Shop shop = shopRepository.getById(shopDTO.getId());
-                if(shopDTO.getEmail() != null) {
-                    shop.setEmail(shopDTO.getEmail());
-                }
-                if(shopDTO.getPhoneNumber() != null) {
-                    shop.setPhoneNumber(shopDTO.getPhoneNumber());
-                }
-                if(shopDTO.getWorkTime() != null) {
-                    shop.setWorkTime(shopDTO.getWorkTime());
-                }
-                if(shopDTO.getAddress() != null) {
-                    shop.setAddress(shopDTO.getAddress());
-                }
-                shopRepository.save(shop);
-            }
+                return new ResponseEntity<>(shopRepository.save(shop), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

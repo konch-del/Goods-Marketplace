@@ -3,7 +3,9 @@ package ru.netcracker.studentsummer2021.goodsmarketplace.contollers;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,51 +36,51 @@ public class ManufacturerController {
 
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('admin')")
-    public void save(@RequestBody ManufacturerDTO manufacturerDTO){
-        manufacturerService.save(manufacturerDTO);
+    public ResponseEntity<?> save(@RequestBody ManufacturerDTO manufacturerDTO){
+        return manufacturerService.save(manufacturerDTO);
     }
 
     @GetMapping("/getById")
-    public ManufacturerDTO getById(@RequestParam Long id){
+    public ResponseEntity<?> getById(@RequestParam Long id){
         return manufacturerService.getById(id);
     }
 
     @GetMapping("/getAll")
-    public List<ManufacturerDTO> getAll(){
+    public ResponseEntity<?> getAll(){
         return manufacturerService.getAll();
     }
 
     @PostMapping("/changeInfo")
     @PreAuthorize("hasAuthority('admin')")
-    public void changeInfo(@RequestBody ManufacturerDTO manufacturerDTO){
-        manufacturerService.changeInfo(manufacturerDTO);
+    public ResponseEntity<?> changeInfo(@RequestBody ManufacturerDTO manufacturerDTO){
+        return manufacturerService.changeInfo(manufacturerDTO);
     }
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('admin')")
-    public void delete(@RequestParam Long id){
-        manufacturerService.delete(id);
+    public ResponseEntity<?> delete(@RequestParam Long id){
+        return manufacturerService.delete(id);
     }
 
     @PostMapping("/loadPicture")
     @PreAuthorize("hasAuthority('admin')")
-    public String loadPicture(@RequestParam("file") MultipartFile file, @RequestParam Long id) throws IOException {
+    public ResponseEntity<?> loadPicture(@RequestParam("file") MultipartFile file, @RequestParam Long id) throws IOException {
         return manufacturerService.loadPicture(file, id);
     }
 
     @PostMapping("/deletePicture")
     @PreAuthorize("hasAuthority('admin')")
-    public void deletePicture(@RequestParam Long id){
-        manufacturerService.deletePicture(id);
+    public ResponseEntity<?> deletePicture(@RequestParam Long id){
+        return manufacturerService.deletePicture(id);
     }
 
     @GetMapping("/search")
-    public List<ManufacturerDTO> search(@RequestParam String name){
+    public ResponseEntity<?> search(@RequestParam String name){
         return manufacturerService.search(name);
     }
 
     @GetMapping(value = "/getPicture", produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody byte[] pic(@RequestParam Long id) throws IOException {
+    public @ResponseBody ResponseEntity<?> pic(@RequestParam Long id) throws IOException {
         return manufacturerService.getPicture(id);
     }
 
