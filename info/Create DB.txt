@@ -182,7 +182,6 @@ CREATE TABLE Values_character
 	VC_ID                INTEGER  NOT NULL ,
 	Val                  VARCHAR2(500)  NOT NULL ,
 	Charact_ID           INTEGER  NOT NULL ,
-	Category_ID          INTEGER  NOT NULL 
 );
 
 CREATE UNIQUE INDEX XPKValues_character ON Values_character
