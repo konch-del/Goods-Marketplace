@@ -18,7 +18,7 @@ import java.io.IOException;
 @RequestMapping("/manufacturer")
 public class ManufacturerController {
 
-    @Value("${upload.path}")
+    @Value("${upload.path.manufacturer}")
     private String path;
 
     private final ManufacturerService manufacturerService;

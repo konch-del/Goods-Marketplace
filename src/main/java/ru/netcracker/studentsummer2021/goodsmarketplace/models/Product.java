@@ -25,10 +25,10 @@ public class Product {
     private String desc;
 
     @Column
-    private String weight;
+    private Double weight;
 
     @Column
-    private String deminsions;
+    private String dimensions;
 
     @Column(name = "date_released")
     private GregorianCalendar dateReleased;
@@ -85,20 +85,20 @@ public class Product {
         this.desc = desc;
     }
 
-    public String getWeight() {
+    public Double getWeight() {
         return weight;
     }
 
-    public void setWeight(String weight) {
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 
-    public String getDeminsions() {
-        return deminsions;
+    public String getDimensions() {
+        return dimensions;
     }
 
-    public void setDeminsions(String deminsions) {
-        this.deminsions = deminsions;
+    public void setDimensions(String dimensions) {
+        this.dimensions = dimensions;
     }
 
     public GregorianCalendar getDateReleased() {

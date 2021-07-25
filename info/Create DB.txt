@@ -129,7 +129,7 @@ ALTER TABLE Product
 CREATE TABLE Picture_product
 (
 	PP_ID                INTEGER  NOT NULL ,
-	Picture_ID           INTEGER  NOT NULL ,
+	Picture_ID           VARCHAR(500),
 	Date_created         DATE  NOT NULL ,
 	Product_ID           INTEGER  NOT NULL 
 );

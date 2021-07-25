@@ -13,7 +13,7 @@ public class PictureProduct {
     private Long id;
 
     @Column(name = "picture_id")
-    private Long picture;
+    private String picture;
 
     @Column(name = "date_created")
     private GregorianCalendar dateCreated;
@@ -29,11 +29,11 @@ public class PictureProduct {
         this.id = id;
     }
 
-    public Long getPicture() {
+    public String getPicture() {
         return picture;
     }
 
-    public void setPicture(Long picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
     }
 

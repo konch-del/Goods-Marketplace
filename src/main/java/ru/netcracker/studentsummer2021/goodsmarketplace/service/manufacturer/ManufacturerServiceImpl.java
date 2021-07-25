@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service("manufacturerServiceImpl")
 public class ManufacturerServiceImpl implements ManufacturerService{
 
-    @Value("${upload.path}")
+    @Value("${upload.path.manufacturer}")
     private String path;
 
     private final ManufacturerRepository manufacturerRepository;

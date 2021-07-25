@@ -7,7 +7,7 @@ import ru.netcracker.studentsummer2021.goodsmarketplace.models.Manufacturer;
 
 @Component
 public class ManufacturerConverter {
-    @Value("${upload.path}")
+    @Value("${upload.path.manufacturer}")
     private String path;
 
     public ManufacturerDTO fromManufacturerToDTO(Manufacturer manufacturer) {

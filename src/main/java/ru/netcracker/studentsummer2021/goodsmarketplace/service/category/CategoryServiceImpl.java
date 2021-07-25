@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.category.CategoryDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.dto.category.CategoryWithHierarchy;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.Category;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.CategoryRepository;
 

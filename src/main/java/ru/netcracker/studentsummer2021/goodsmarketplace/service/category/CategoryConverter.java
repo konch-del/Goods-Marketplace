@@ -32,10 +32,18 @@ public class CategoryConverter {
     }
 
     public CategoryWithHierarchy fromCategoryToHierarchyDTO(Category category){
-        return CategoryWithHierarchy.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .parents(categoryRepository.getHierarchy(category.getParentID()))
-                .build();
+        if(categoryRepository.getById(category.getId()).getParentID() != null){
+            return CategoryWithHierarchy.builder()
+                    .id(category.getId())
+                    .name(category.getName())
+                    .parents(fromCategoryToHierarchyDTO(categoryRepository.getHierarchy(category.getParentID())))
+                    .build();
+        }else {
+            return CategoryWithHierarchy.builder()
+                    .id(category.getId())
+                    .name(category.getName())
+                    .parents(null)
+                    .build();
+        }
     }
 }
