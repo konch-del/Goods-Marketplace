@@ -13,13 +13,13 @@ public class Feedback {
     private Long id;
 
     @Column
-    private boolean visibility;
+    private Integer visibility;
 
     @Column(name = "text_fb")
     private String text;
 
     @Column
-    private int rating;
+    private Integer rating;
 
     @Column(name = "date_created")
     private GregorianCalendar dateCreated;
@@ -41,11 +41,11 @@ public class Feedback {
         this.id = id;
     }
 
-    public boolean isVisibility() {
+    public Integer isVisibility() {
         return visibility;
     }
 
-    public void setVisibility(boolean visibility) {
+    public void setVisibility(Integer visibility) {
         this.visibility = visibility;
     }
 
@@ -57,11 +57,11 @@ public class Feedback {
         this.text = text;
     }
 
-    public int getRating() {
+    public Integer getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
 
