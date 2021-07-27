@@ -74,9 +74,7 @@ CREATE TABLE Order_
 	Modified_date        DATE  NOT NULL ,
 	Modified_date_OS     DATE  NOT NULL ,
 	User_ID              INTEGER  NOT NULL ,
-	SU_ID                INTEGER  NOT NULL ,
-	Shop_ID              INTEGER  NOT NULL ,
-	Product_ID           INTEGER  NOT NULL 
+	SU_ID                INTEGER  NOT NULL 
 );
 
 CREATE UNIQUE INDEX XPKOrder ON Order_

@@ -42,12 +42,6 @@ public class Order {
     @Column(name = "su_id")
     private Long su;
 
-    @Column(name = "shop_id")
-    private Long shop;
-
-    @Column(name = "product_id")
-    private Long product;
-
     public Long getId() {
         return id;
     }
@@ -136,19 +130,4 @@ public class Order {
         this.su = su;
     }
 
-    public Long getShop() {
-        return shop;
-    }
-
-    public void setShop(Long shop) {
-        this.shop = shop;
-    }
-
-    public Long getProduct() {
-        return product;
-    }
-
-    public void setProduct(Long product) {
-        this.product = product;
-    }
 }
