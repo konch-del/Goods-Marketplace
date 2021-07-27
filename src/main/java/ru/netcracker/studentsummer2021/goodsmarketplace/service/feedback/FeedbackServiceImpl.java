@@ -64,7 +64,7 @@ public class FeedbackServiceImpl implements FeedbackService{
         feedback.setRating(feedbackDTO.getRating());
         feedback.setVisibility(1);
         if(users.getId().equals(feedback.getUserId())){
-            return new ResponseEntity<>(feedbackConverter.fromFeedbackToDTO(feedback), HttpStatus.OK);
+            return new ResponseEntity<>(feedbackRepository.save(feedback), HttpStatus.OK);
         }else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
