@@ -25,8 +25,8 @@ public class ValuesCharacterController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> get(@RequestParam Long Id){
-        return valuesCharacterService.get(Id);
+    public ResponseEntity<?> get(@RequestParam Long id){
+        return valuesCharacterService.get(id);
     }
 
     @PostMapping("/changeInfo")

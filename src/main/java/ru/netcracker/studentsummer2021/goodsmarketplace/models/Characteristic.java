@@ -15,7 +15,7 @@ public class Characteristic {
     private String name;
 
     @Column(name = "type_character")
-    private String type;
+    private Type type;
 
     @Column(name = "category_id")
     private Long categoryId;
@@ -36,11 +36,11 @@ public class Characteristic {
         this.name = name;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

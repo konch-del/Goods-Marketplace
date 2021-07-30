@@ -5,9 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.valuesCharacter.LinkToProductDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.valuesCharacter.ValuesCharacterDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.models.Characteristic;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.ValuesCharacter;
+import ru.netcracker.studentsummer2021.goodsmarketplace.repo.CharacteristicRepository;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.ProductValuesCharacterRepository;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.ValuesCharacterRepository;
+
+import java.util.regex.Pattern;
 
 @Service("valuesCharacterServiceImpl")
 public class ValuesCharacterServiceImpl implements ValuesCharacterService{
@@ -15,16 +19,26 @@ public class ValuesCharacterServiceImpl implements ValuesCharacterService{
     private final ValuesCharacterRepository valuesCharacterRepository;
     private final ValuesCharacterConverter valuesCharacterConverter;
     private final ProductValuesCharacterRepository productValuesCharacterRepository;
+    private final CharacteristicRepository characteristicRepository;
 
-    public ValuesCharacterServiceImpl(ValuesCharacterRepository valuesCharacterRepository, ValuesCharacterConverter valuesCharacterConverter, ProductValuesCharacterRepository productValuesCharacterRepository) {
+    public ValuesCharacterServiceImpl(ValuesCharacterRepository valuesCharacterRepository, ValuesCharacterConverter valuesCharacterConverter, ProductValuesCharacterRepository productValuesCharacterRepository, CharacteristicRepository characteristicRepository) {
         this.valuesCharacterRepository = valuesCharacterRepository;
         this.valuesCharacterConverter = valuesCharacterConverter;
         this.productValuesCharacterRepository = productValuesCharacterRepository;
+        this.characteristicRepository = characteristicRepository;
     }
 
     @Override
     public ResponseEntity<?> save(ValuesCharacterDTO valuesCharacterDTO) {
-        return new ResponseEntity<>(valuesCharacterRepository.save(valuesCharacterConverter.fromDTOToValuesCharacter(valuesCharacterDTO)), HttpStatus.CREATED);
+        Characteristic characteristic = characteristicRepository.getById(valuesCharacterDTO.getCharact());
+        System.out.println(characteristic.getType().getType());
+        Pattern p = Pattern.compile(characteristic.getType().getType());
+        System.out.println(Pattern.matches(valuesCharacterDTO.getValue(), valuesCharacterDTO.getValue()));
+        if(valuesCharacterDTO.getValue().matches(characteristic.getType().getType())){
+            return new ResponseEntity<>(valuesCharacterRepository.save(valuesCharacterConverter.fromDTOToValuesCharacter(valuesCharacterDTO)), HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override

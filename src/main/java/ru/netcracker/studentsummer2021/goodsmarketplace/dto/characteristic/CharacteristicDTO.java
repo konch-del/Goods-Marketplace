@@ -4,6 +4,7 @@ package ru.netcracker.studentsummer2021.goodsmarketplace.dto.characteristic;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import ru.netcracker.studentsummer2021.goodsmarketplace.models.Type;
 
 @Getter
 @Setter
@@ -16,5 +17,5 @@ public class CharacteristicDTO {
 
     private String name;
 
-    private String type;
+    private Type type;
 }
