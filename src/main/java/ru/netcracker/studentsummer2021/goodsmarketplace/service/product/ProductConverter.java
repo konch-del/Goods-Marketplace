@@ -1,9 +1,12 @@
 package ru.netcracker.studentsummer2021.goodsmarketplace.service.product;
 
 import org.springframework.stereotype.Component;
+import ru.netcracker.studentsummer2021.goodsmarketplace.dto.category.CategoryDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.dto.manufacturer.ManufacturerDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.product.PictureProductDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.product.ProductAdminDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.product.ProductPublicDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.dto.product.ProductSaveDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.PictureProduct;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.Product;
 
@@ -13,7 +16,7 @@ import java.util.GregorianCalendar;
 @Component
 public class ProductConverter {
 
-    public Product fromPublicDTOToProduct(ProductPublicDTO productPublicDTO){
+    public Product fromPublicDTOToProduct(ProductSaveDTO productPublicDTO){
         Product product = new Product();
         product.setId(productPublicDTO.getId());
         product.setName(productPublicDTO.getName());
@@ -30,7 +33,7 @@ public class ProductConverter {
         return product;
     }
 
-    public ProductPublicDTO fromProductToPublicDTO(Product product){
+    public ProductPublicDTO fromProductToPublicDTO(Product product, CategoryDTO categoryDTO, ManufacturerDTO manufacturerDTO, PictureProduct picture){
         return ProductPublicDTO.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -40,12 +43,13 @@ public class ProductConverter {
                 .weight(product.getWeight())
                 .dimensions(product.getDimensions())
                 .dateReleased(product.getDateReleased())
-                .categoryId(product.getCategory())
-                .manufacturerId(product.getManufacturer())
+                .category(categoryDTO)
+                .manufacturer(manufacturerDTO)
+                .picture(picture)
                 .build();
     }
 
-    public ProductAdminDTO fromProductToAdminDTO(Product product){
+    public ProductAdminDTO fromProductToAdminDTO(Product product, CategoryDTO categoryDTO, ManufacturerDTO manufacturerDTO, PictureProduct picture){
         return ProductAdminDTO.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -55,10 +59,11 @@ public class ProductConverter {
                 .weight(product.getWeight())
                 .dimensions(product.getDimensions())
                 .dateReleased(product.getDateReleased())
-                .categoryId(product.getCategory())
-                .manufacturerId(product.getManufacturer())
+                .category(categoryDTO)
+                .manufacturer(manufacturerDTO)
                 .dateCreation(product.getDateCreated())
                 .modifiedDate(product.getModifiedDate())
+                .picture(picture)
                 .build();
     }
 

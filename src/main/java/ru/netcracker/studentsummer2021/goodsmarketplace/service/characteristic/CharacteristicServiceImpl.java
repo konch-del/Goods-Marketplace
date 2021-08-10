@@ -5,8 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.characteristic.CharacteristicDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.dto.characteristic.FilterDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.dto.characteristic.FilterDTOImpl;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.CharacteristicRepository;
 
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service("characteristicServiceImpl")
@@ -58,12 +62,27 @@ public class CharacteristicServiceImpl implements CharacteristicService {
     }
 
     @Override
-    public ResponseEntity<?> getForProduct() {
-        return null;
+    public ResponseEntity<?> getForProduct(Long productId) {
+        List<?> result = characteristicRepository.getForProduct(productId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<?> filter() {
-        return null;
+    public ResponseEntity<?> filter(Map<String, String> charact) {
+        return new ResponseEntity<>(getFilteredId(charact), HttpStatus.OK);
+    }
+
+    public Set<Long> getFilteredId(Map<String, String> charact){
+        Set<String> character = charact.keySet();
+        return characteristicRepository.getFilter(character)
+                .stream()
+                .filter(x -> x.getValue().equals(charact.get(x.getCharact())))
+                .map(FilterDTO::getProductId)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet()
+                .stream()
+                .filter(e -> e.getValue() >= charact.size())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 }

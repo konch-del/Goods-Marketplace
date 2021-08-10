@@ -1,31 +1,36 @@
 package ru.netcracker.studentsummer2021.goodsmarketplace.service.product;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.product.PictureProductDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.product.ProductPublicDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.dto.product.ProductSaveDTO;
 
 import java.io.IOException;
+import java.util.Map;
 
 public interface ProductService {
 
-    ResponseEntity<?> saveProduct(ProductPublicDTO productPublicDTO);
+    ResponseEntity<?> saveProduct(ProductSaveDTO productPublicDTO);
 
-    ResponseEntity<?> changeInfo(ProductPublicDTO productPublicDTO);
+    ResponseEntity<?> changeInfo(ProductSaveDTO productPublicDTO);
 
     ResponseEntity<?> getProduct(Long productId);
 
-    ResponseEntity<?> getProductInCategory();
+    ProductPublicDTO getProductDTO(Long productId);
 
-    ResponseEntity<?> getProductInManufacturer();
+    ResponseEntity<?> getProductInCategory(Map<String, String> charact);
+
+    ResponseEntity<?> getProductInManufacturer(Map<String, String> charact);
 
     ResponseEntity<?> deleteProduct(Long productId);
 
-    ResponseEntity<?> getRecommended();
+    ResponseEntity<?> getRecommended(User user);
 
-    ResponseEntity<?> search();
+    ResponseEntity<?> search(String search);
 
-    ResponseEntity<?> getRating();
+    ResponseEntity<?> getRating(Long productId);
 
     ResponseEntity<?> createPicture(PictureProductDTO pictureProductDTO);
 

@@ -14,7 +14,7 @@ public interface SalesUnitService {
 
     ResponseEntity<?> delete(User user, Long salesUnitId);
 
-    ResponseEntity<?> getForCity();
+    ResponseEntity<?> getForCity(User user, Long suId);
 
     ResponseEntity<?> getAll(User user, Long salesUnitId);
 

@@ -23,4 +23,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     @Query(value = "SELECT * FROM FEEDBACK_ WHERE USER_ID = ?1", nativeQuery = true)
     List<Feedback> getAllForUser(Long productId);
+
+    @Query(value = "SELECT AVG(rating) FROM FEEDBACK_ WHERE product_id = ?1", nativeQuery = true)
+    Double getRating(Long productId);
 }

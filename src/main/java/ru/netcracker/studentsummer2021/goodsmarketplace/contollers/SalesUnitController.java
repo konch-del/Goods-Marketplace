@@ -37,15 +37,15 @@ public class SalesUnitController {
     public ResponseEntity<?> changeInfo(@AuthenticationPrincipal User user, @RequestBody SalesUnitDTO salesUnitDTO){
         return salesUnitService.changeInfo(user, salesUnitDTO);
     }
-    /*
+
     @GetMapping("/getForCity")
-    public ResponseEntity<?> getForCity(){
-        return salesUnitService.getForCity();
+    public ResponseEntity<?> getForCity(@AuthenticationPrincipal User user, @RequestParam Long id){
+        return salesUnitService.getForCity(user, id);
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<?> getAll(){
-        return salesUnitService.getAll();
+    public ResponseEntity<?> getAll(@AuthenticationPrincipal User user, @RequestParam Long id){
+        return salesUnitService.getAll(user, id);
     }
-    */
+
 }

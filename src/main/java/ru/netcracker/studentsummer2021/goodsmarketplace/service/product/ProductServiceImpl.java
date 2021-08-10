@@ -4,18 +4,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.netcracker.studentsummer2021.goodsmarketplace.dto.category.CategoryDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.dto.manufacturer.ManufacturerDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.product.PictureProductDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.product.ProductPublicDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.dto.product.ProductSaveDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.models.PictureProduct;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.Product;
-import ru.netcracker.studentsummer2021.goodsmarketplace.repo.PictureProductRepository;
-import ru.netcracker.studentsummer2021.goodsmarketplace.repo.ProductRepository;
+import ru.netcracker.studentsummer2021.goodsmarketplace.models.Users;
+import ru.netcracker.studentsummer2021.goodsmarketplace.repo.*;
+import ru.netcracker.studentsummer2021.goodsmarketplace.service.category.CategoryConverter;
+import ru.netcracker.studentsummer2021.goodsmarketplace.service.characteristic.CharacteristicServiceImpl;
+import ru.netcracker.studentsummer2021.goodsmarketplace.service.manufacturer.ManufacturerConverter;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,16 +38,30 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductConverter productConverter;
     private final PictureProductRepository pictureProduct;
+    private final ManufacturerRepository manufacturerRepository;
+    private final CategoryRepository categoryRepository;
+    private final CategoryConverter categoryConverter;
+    private final ManufacturerConverter manufacturerConverter;
+    private final FeedbackRepository feedbackRepository;
+    private final CharacteristicServiceImpl characteristicServiceImpl;
+    private final UsersRepository usersRepository;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ProductConverter productConverter, PictureProductRepository pictureProduct) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductConverter productConverter, PictureProductRepository pictureProduct, ManufacturerRepository manufacturerRepository, CategoryRepository categoryRepository, CategoryConverter categoryConverter, ManufacturerConverter manufacturerConverter, FeedbackRepository feedbackRepository, CharacteristicServiceImpl characteristicServiceImpl, UsersRepository usersRepository) {
         this.productRepository = productRepository;
         this.productConverter = productConverter;
         this.pictureProduct = pictureProduct;
+        this.manufacturerRepository = manufacturerRepository;
+        this.categoryRepository = categoryRepository;
+        this.categoryConverter = categoryConverter;
+        this.manufacturerConverter = manufacturerConverter;
+        this.feedbackRepository = feedbackRepository;
+        this.characteristicServiceImpl = characteristicServiceImpl;
+        this.usersRepository = usersRepository;
     }
 
     @Override
-    public ResponseEntity<?> saveProduct(ProductPublicDTO productPublicDTO) {
+    public ResponseEntity<?> saveProduct(ProductSaveDTO productPublicDTO) {
         if(productPublicDTO.getName().equals("") || productPublicDTO.getModel().equals("")
             || productPublicDTO.getArticle().equals("") || productPublicDTO.getDesc().equals("")
             || productPublicDTO.getWeight() == null || productPublicDTO.getDimensions().equals("")
@@ -47,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseEntity<?> changeInfo(ProductPublicDTO productPublicDTO) {
+    public ResponseEntity<?> changeInfo(ProductSaveDTO productPublicDTO) {
         if(productRepository.findById(productPublicDTO.getId()).isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -94,17 +118,36 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseEntity<?> getProduct(Long productId) {
-        return null;
+        if (productRepository.findById(productId).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Product product = productRepository.getById(productId);
+        CategoryDTO categoryDTO = categoryConverter.fromCategoryToDTO(categoryRepository.getById(product.getCategory()));
+        ManufacturerDTO manufacturerDTO = manufacturerConverter.fromManufacturerToDTO(manufacturerRepository.getById(product.getManufacturer()));
+        PictureProduct picture = pictureProduct.findByProductId(product.getId()).get(0);
+        return new ResponseEntity<>(productConverter.fromProductToPublicDTO(product, categoryDTO, manufacturerDTO, picture), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<?> getProductInCategory() {
-        return null;
+    public ProductPublicDTO getProductDTO(Long productId){
+        Product product = productRepository.getById(productId);
+        CategoryDTO categoryDTO = categoryConverter.fromCategoryToDTO(categoryRepository.getById(product.getCategory()));
+        ManufacturerDTO manufacturerDTO = manufacturerConverter.fromManufacturerToDTO(manufacturerRepository.getById(product.getManufacturer()));
+        PictureProduct picture = pictureProduct.findByProductId(product.getId()).get(0);
+        return productConverter.fromProductToPublicDTO(product, categoryDTO, manufacturerDTO, picture);
     }
 
     @Override
-    public ResponseEntity<?> getProductInManufacturer() {
-        return null;
+    public ResponseEntity<?> getProductInCategory(Map<String, String> charact) {
+        return characteristicServiceImpl.filter(charact);
+    }
+
+    @Override
+    public ResponseEntity<?> getProductInManufacturer(Map<String, String> charact) {
+        String manufacturerId = charact.get("manufacturerId");
+        charact.keySet().removeIf(x -> x.equals("manufacturerId"));
+        Set<Long> productsId = characteristicServiceImpl.getFilteredId(charact);
+        return new ResponseEntity<>(productRepository.getProductInManufacturer(productsId, manufacturerId), HttpStatus.OK);
     }
 
     @Override
@@ -117,18 +160,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseEntity<?> getRecommended() {
-        return null;
+    public ResponseEntity<?> getRecommended(User user) {
+        Users users = usersRepository.findByUsername(user.getUsername());
+        List<ProductPublicDTO> products = productRepository.getRecommended(users.getId())
+                .stream()
+                .map(s -> getProductDTO(s.getId()))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<?> search() {
-        return null;
+    public ResponseEntity<?> search(String search) {
+        List<ProductPublicDTO> products = productRepository.search(search)
+                .stream()
+                .map(s -> getProductDTO(s.getId()))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<?> getRating() {
-        return null;
+    public ResponseEntity<?> getRating(Long productId) {
+        return new ResponseEntity<>(feedbackRepository.getRating(productId), HttpStatus.OK);
     }
 
     @Override

@@ -9,12 +9,13 @@ import org.springframework.stereotype.Service;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.salesUnit.SalesUnitDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.salesUnit.SalesUnitPublicDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.SalesUnit;
+import ru.netcracker.studentsummer2021.goodsmarketplace.models.Users;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.ProductRepository;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.SalesUnitRepository;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.UsersRepository;
 import ru.netcracker.studentsummer2021.goodsmarketplace.service.product.ProductConverter;
+import ru.netcracker.studentsummer2021.goodsmarketplace.service.product.ProductServiceImpl;
 
-import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,15 +27,17 @@ public class SalesUnitServiceImpl implements SalesUnitService {
     private final UsersRepository usersRepository;
     private final ProductRepository productRepository;
     private final ProductConverter productConverter;
+    private final ProductServiceImpl productService;
 
 
     @Autowired
-    public SalesUnitServiceImpl(SalesUnitRepository salesUnitRepository, SalesUnitConverter salesUnitConverter, UsersRepository usersRepository, ProductRepository productRepository, ProductConverter productConverter) {
+    public SalesUnitServiceImpl(SalesUnitRepository salesUnitRepository, SalesUnitConverter salesUnitConverter, UsersRepository usersRepository, ProductRepository productRepository, ProductConverter productConverter, ProductServiceImpl productService) {
         this.salesUnitRepository = salesUnitRepository;
         this.salesUnitConverter = salesUnitConverter;
         this.usersRepository = usersRepository;
         this.productRepository = productRepository;
         this.productConverter = productConverter;
+        this.productService = productService;
     }
 
     @Override
@@ -51,7 +54,7 @@ public class SalesUnitServiceImpl implements SalesUnitService {
         }
         return new ResponseEntity<>(salesUnitConverter.fromSalesUnitToDTO(
                 salesUnitRepository.getById(salesUnitId),
-                productConverter.fromProductToPublicDTO(productRepository.getById(salesUnitRepository.getById(salesUnitId).getProduct()))),
+                productService.getProductDTO(salesUnitRepository.getById(salesUnitId).getProduct())),
                 HttpStatus.OK);
     }
 
@@ -83,8 +86,13 @@ public class SalesUnitServiceImpl implements SalesUnitService {
     }
 
     @Override
-    public ResponseEntity<?> getForCity() {
-        return null;
+    public ResponseEntity<?> getForCity(User user, Long suId) {
+        Users users = usersRepository.findByUsername(user.getUsername());
+        return new ResponseEntity<>(salesUnitRepository.getForCity(suId, users.getId())
+                .stream()
+                .map((s) -> salesUnitConverter.fromSalesUnitToDTO(s,
+                        productService.getProductDTO(salesUnitRepository.getById(s.getId()).getProduct())))
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @Override
@@ -97,7 +105,7 @@ public class SalesUnitServiceImpl implements SalesUnitService {
             List<SalesUnitPublicDTO> salesUnit = salesUnitRepository.findSalesUnitByShop(shopId)
                     .stream()
                     .map((s) -> salesUnitConverter.fromSalesUnitToDTO(s,
-                            productConverter.fromProductToPublicDTO(productRepository.getById(salesUnitRepository.getById(s.getId()).getProduct()))))
+                            productService.getProductDTO(salesUnitRepository.getById(s.getId()).getProduct())))
                     .collect(Collectors.toList());
             return new ResponseEntity<>(salesUnit, HttpStatus.OK);
         }else {

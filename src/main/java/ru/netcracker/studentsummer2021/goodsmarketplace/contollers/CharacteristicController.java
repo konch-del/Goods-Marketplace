@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.characteristic.CharacteristicDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.service.characteristic.CharacteristicService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/characteristic")
 public class CharacteristicController {
@@ -38,12 +40,15 @@ public class CharacteristicController {
     public ResponseEntity<?> getAll(@RequestParam Long id){
         return characteristicService.getAll(id);
     }
-    /*
-    public ResponseEntity<?> getForProduct(){
 
+    @GetMapping("/getForProduct")
+    public ResponseEntity<?> getForProduct(@RequestParam Long id){
+        return characteristicService.getForProduct(id);
     }
 
-    public ResponseEntity<?> filter(){
+    @GetMapping("/filter")
+    public ResponseEntity<?> filter(@RequestBody Map<String, String> charact) {
+        return characteristicService.filter(charact);
+    }
 
-    }*/
 }

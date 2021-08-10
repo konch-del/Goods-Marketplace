@@ -4,10 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import ru.netcracker.studentsummer2021.goodsmarketplace.dto.category.CategoryDTO;
-import ru.netcracker.studentsummer2021.goodsmarketplace.dto.manufacturer.ManufacturerDTO;
-import ru.netcracker.studentsummer2021.goodsmarketplace.models.PictureProduct;
-
 import java.util.GregorianCalendar;
 
 
@@ -15,11 +11,11 @@ import java.util.GregorianCalendar;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-public class ProductPublicDTO implements ProductDTO{
+public class ProductSaveDTO implements ProductDTO{
 
     private Long id;
-    private CategoryDTO category;
-    private ManufacturerDTO manufacturer;
+    private Long categoryId;
+    private Long manufacturerId;
     private String name;
     private String model;
     private String article;
@@ -27,5 +23,4 @@ public class ProductPublicDTO implements ProductDTO{
     private Double weight;
     private String dimensions;
     private GregorianCalendar dateReleased;
-    private PictureProduct picture;
 }
