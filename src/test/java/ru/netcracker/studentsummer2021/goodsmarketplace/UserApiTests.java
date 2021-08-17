@@ -91,7 +91,7 @@ public class UserApiTests {
         mockMvc.perform(get("/users/findAll")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)));
+                .andExpect(jsonPath("$", hasSize(5)));
     }
 
     @WithMockUser(authorities = "admin")

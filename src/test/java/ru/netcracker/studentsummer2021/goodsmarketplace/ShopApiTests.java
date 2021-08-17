@@ -17,18 +17,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.netcracker.studentsummer2021.goodsmarketplace.data.ShopData;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.Shop;
-import ru.netcracker.studentsummer2021.goodsmarketplace.models.Users;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.ShopRepository;
-import ru.netcracker.studentsummer2021.goodsmarketplace.repo.UsersRepository;
 import ru.netcracker.studentsummer2021.goodsmarketplace.service.shops.ShopsConverter;
-
-import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.netcracker.studentsummer2021.goodsmarketplace.data.UsersData.data;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
