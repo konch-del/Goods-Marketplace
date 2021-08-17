@@ -64,8 +64,8 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         if (usersDto.getUsername().equals("") || usersDto.getEmail().equals("")
             || usersDto.getPassword().equals("") || usersDto.getFcs().equals("")
             || usersDto.getCity().equals("") || usersDto.getPhoneNumber().equals("")) {
-            return false;
-        }else return true;
+            return true;
+        }else return false;
     }
 
     /**
@@ -117,8 +117,8 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         if(usersRepository.findById(userId).isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Optional<Users> users = usersRepository.findById(userId);
-        return new ResponseEntity<>(users.map(usersConverter::fromUserToUserDto).orElse(null), HttpStatus.OK);
+        Users users = usersRepository.getById(userId);
+        return new ResponseEntity<>(usersConverter.fromUserToUserDto(users), HttpStatus.OK);
     }
 
     /**
@@ -145,9 +145,6 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Users user = usersRepository.findById(userDTO.getId()).get();
-        if(userDTO.getEmail() != null){
-            user.setEmail(userDTO.getEmail());
-        }
         if(userDTO.getAddress() != null){
             user.setAddress(userDTO.getAddress());
         }
@@ -220,9 +217,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     public ResponseEntity<?> getUserById(User activeUser, Long userId){
         if(usersRepository.findById(userId).isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Пользователь не найден", HttpStatus.NOT_FOUND);
         }
-        Users user = usersRepository.findById(userId).get();
+        Users user = usersRepository.getById(userId);
         if(activeUser.getAuthorities().contains(new SimpleGrantedAuthority("admin"))){
             return new ResponseEntity<>(usersConverter.fromUserToUserAdmin(user), HttpStatus.OK);
         }

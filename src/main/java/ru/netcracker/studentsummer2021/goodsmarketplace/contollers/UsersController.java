@@ -72,7 +72,7 @@ public class UsersController {
      * @return
      */
     @PostMapping("/changeinfo")
-    @PreAuthorize("hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> changeUser(@RequestBody UsersPrivatDTO usersDto){
         return usersService.changeInfo(usersDto);
     }
