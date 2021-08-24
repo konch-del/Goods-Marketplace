@@ -31,9 +31,7 @@ public class ValuesCharacterServiceImpl implements ValuesCharacterService{
     @Override
     public ResponseEntity<?> save(ValuesCharacterDTO valuesCharacterDTO) {
         Characteristic characteristic = characteristicRepository.getById(valuesCharacterDTO.getCharact());
-        System.out.println(characteristic.getType().getType());
         Pattern p = Pattern.compile(characteristic.getType().getType());
-        System.out.println(Pattern.matches(valuesCharacterDTO.getValue(), valuesCharacterDTO.getValue()));
         if(valuesCharacterDTO.getValue().matches(characteristic.getType().getType())){
             return new ResponseEntity<>(valuesCharacterRepository.save(valuesCharacterConverter.fromDTOToValuesCharacter(valuesCharacterDTO)), HttpStatus.CREATED);
         }else{

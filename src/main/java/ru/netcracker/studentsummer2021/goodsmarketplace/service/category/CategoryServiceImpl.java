@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService{
         if(categoryRepository.findById(categoryId).isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(categoryConverter.fromCategoryToHierarchyDTO(categoryRepository.findById(categoryId).get()), HttpStatus.OK);
+        return new ResponseEntity<>(categoryConverter.fromCategoryToHierarchyDTO(categoryRepository.getById(categoryId)), HttpStatus.OK);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService{
         if(categoryRepository.findById(categoryDTO.getId()).isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Category category = categoryRepository.findById(categoryDTO.getId()).get();
+        Category category = categoryRepository.getById(categoryDTO.getId());
         if(categoryDTO.getName().equals("")){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

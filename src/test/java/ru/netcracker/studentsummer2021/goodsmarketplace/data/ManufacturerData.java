@@ -14,7 +14,7 @@ public class ManufacturerData {
         //manufacturer.setPicture();
 
         Manufacturer manufacturer2 = new Manufacturer();
-        manufacturer2.setId(1L);
+        manufacturer2.setId(2L);
         manufacturer2.setName("");
         manufacturer2.setDesc("It's a farm");
         //manufacturer.setPicture();
