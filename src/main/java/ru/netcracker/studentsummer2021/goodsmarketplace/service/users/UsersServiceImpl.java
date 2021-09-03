@@ -61,11 +61,12 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @param usersDto объект получений при запросе
      */
     private boolean validateUserDto(UsersAdminDTO usersDto){
-        if (usersDto.getUsername().equals("") || usersDto.getEmail().equals("")
-            || usersDto.getPassword().equals("") || usersDto.getFcs().equals("")
-            || usersDto.getCity().equals("") || usersDto.getPhoneNumber().equals("")) {
-            return true;
-        }else return false;
+        return usersDto.getUsername() == null || usersDto.getUsername().equals("")
+                || usersDto.getEmail() == null || usersDto.getEmail().equals("")
+                || usersDto.getPassword() == null || usersDto.getPassword().equals("")
+                || usersDto.getFcs() == null || usersDto.getFcs().equals("")
+                || usersDto.getCity() == null || usersDto.getCity().equals("")
+                || usersDto.getPhoneNumber() == null || usersDto.getPhoneNumber().equals("");
     }
 
     /**
@@ -74,7 +75,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      */
     @Override
     public ResponseEntity<?> deleteUser(Long userId) {
-        if(usersRepository.findById(userId).isEmpty()){
+        if(userId == null || usersRepository.findById(userId).isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         usersRepository.deleteById(userId);
@@ -88,9 +89,11 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      */
     @Override
     public ResponseEntity<?> findByUsername(String login) {
-        Users users = usersRepository.findByUsername(login);
-        if (users != null) {
-            return new ResponseEntity<>(usersConverter.fromUserToUserDto(users), HttpStatus.OK);
+        if(login != null){
+            Users users = usersRepository.findByUsername(login);
+            if (users != null) {
+                return new ResponseEntity<>(usersConverter.fromUserToUserDto(users), HttpStatus.OK);
+            }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -114,7 +117,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      */
     @Override
     public ResponseEntity<?> findById(Long userId) {
-        if(usersRepository.findById(userId).isEmpty()){
+        if(userId == null || usersRepository.findById(userId).isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Users users = usersRepository.getById(userId);
@@ -128,7 +131,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      */
     @Override
     public ResponseEntity<?> changeActivation(Long userId, Integer active) {
-        if(usersRepository.findById(userId).isEmpty()){
+        if(userId == null || active == null ||usersRepository.findById(userId).isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         usersRepository.changeActiv(userId, active);
@@ -140,24 +143,24 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      * @param userDTO объект получений при запросе
      */
     @Override
-    public ResponseEntity<?> changeInfo(UsersPrivatDTO userDTO) {
-        if(usersRepository.findById(userDTO.getId()).isEmpty()){
+    public ResponseEntity<?> changeInfo(User user, UsersPrivatDTO userDTO) {
+        if(userDTO.getId() == null || usersRepository.findById(userDTO.getId()).isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Users user = usersRepository.findById(userDTO.getId()).get();
-        if(userDTO.getAddress() != null){
-            user.setAddress(userDTO.getAddress());
+        Users users = usersRepository.findByUsername(user.getUsername());
+        if(userDTO.getAddress() != null && !userDTO.getAddress().equals("")){
+            users.setAddress(userDTO.getAddress());
         }
-        if(userDTO.getPhoneNumber() != null){
-            user.setPhoneNumber(userDTO.getPhoneNumber());
+        if(userDTO.getPhoneNumber() != null && !userDTO.getPhoneNumber().equals("")){
+            users.setPhoneNumber(userDTO.getPhoneNumber());
         }
-        if(userDTO.getCity() != null){
-            user.setCity(userDTO.getCity());
+        if(userDTO.getCity() != null && !userDTO.getCity().equals("")){
+            users.setCity(userDTO.getCity());
         }
-        if(userDTO.getFcs() != null){
-            user.setFcs(userDTO.getFcs());
+        if(userDTO.getFcs() != null && !userDTO.getFcs().equals("")){
+            users.setFcs(userDTO.getFcs());
         }
-        return new ResponseEntity<>(usersRepository.save(user), HttpStatus.OK);
+        return new ResponseEntity<>(usersRepository.save(users), HttpStatus.OK);
     }
 
     /**
@@ -186,7 +189,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     public ResponseEntity<?> changePassword(User activeUser, String password, String password2, String password3) {
         Users user = usersRepository.findByUsername(activeUser.getUsername());
-        if(password.equals(password2) && password.equals(user.getPassword())){
+        if(password != null && password3 != null && password.equals(password2) && password.equals(user.getPassword())){
             usersRepository.changePass(user.getId(), password3);
             return new ResponseEntity<>(HttpStatus.OK);
         }else{
@@ -201,7 +204,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      */
     @Override
     public ResponseEntity<?> changeShop(Long userId, Long shopId) {
-        if(usersRepository.findById(userId).isEmpty() || shopRepository.findById(shopId).isEmpty()){
+        if(userId == null && shopId == null && usersRepository.findById(userId).isEmpty() || shopRepository.findById(shopId).isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         usersRepository.changeShop(userId, shopId);
@@ -216,7 +219,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      */
     @Override
     public ResponseEntity<?> getUserById(User activeUser, Long userId){
-        if(usersRepository.findById(userId).isEmpty()){
+        if(userId == null && usersRepository.findById(userId).isEmpty()){
             return new ResponseEntity<>("Пользователь не найден", HttpStatus.NOT_FOUND);
         }
         Users user = usersRepository.getById(userId);

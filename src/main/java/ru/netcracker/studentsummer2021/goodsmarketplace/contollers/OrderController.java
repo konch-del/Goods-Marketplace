@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.order.OrderPublicDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.models.Status;
 import ru.netcracker.studentsummer2021.goodsmarketplace.service.order.OrderService;
 
 @RestController
@@ -51,7 +52,7 @@ public class OrderController {
     }
 
     @PostMapping("/changeStatus")
-    public ResponseEntity<?> changeStatus(@AuthenticationPrincipal User user, @RequestParam Long id, @RequestParam String status){
+    public ResponseEntity<?> changeStatus(@AuthenticationPrincipal User user, @RequestParam Long id, @RequestParam Status status){
         return orderService.changeStatus(user, id, status);
     }
 }

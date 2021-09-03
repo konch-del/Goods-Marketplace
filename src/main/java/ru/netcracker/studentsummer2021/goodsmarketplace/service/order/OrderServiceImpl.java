@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.order.OrderPublicDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.Order;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.SalesUnit;
+import ru.netcracker.studentsummer2021.goodsmarketplace.models.Status;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.Users;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.OrderRepository;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.SalesUnitRepository;
@@ -123,7 +124,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ResponseEntity<?> changeStatus(User user, Long orderId, String status) {
+    public ResponseEntity<?> changeStatus(User user, Long orderId, Status status) {
         if(orderRepository.findById(orderId).isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

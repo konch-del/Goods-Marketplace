@@ -39,7 +39,7 @@ public class UsersController {
      * @return информацию о всех пользователях
      */
     @GetMapping("/findAll")
-    @PreAuthorize("hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> findAllUsers() {
         return usersService.findAll();
     }
@@ -50,7 +50,7 @@ public class UsersController {
      * @return пользователя
      */
     @GetMapping("/findByLogin")
-    @PreAuthorize("hasAuthority('user')")
+    //@PreAuthorize("hasAuthority('user')")
     public ResponseEntity<?> findByLogin(@RequestParam String username) {
         return usersService.findByUsername(username);
     }
@@ -61,7 +61,7 @@ public class UsersController {
      * @return
      */
     @DeleteMapping("/delete")
-    @PreAuthorize("hasAuthority('admin')")
+    //@PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> deleteUsers(@RequestParam Long id) {
         return usersService.deleteUser(id);
     }
@@ -72,9 +72,9 @@ public class UsersController {
      * @return
      */
     @PostMapping("/changeinfo")
-    //@PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<?> changeUser(@RequestBody UsersPrivatDTO usersDto){
-        return usersService.changeInfo(usersDto);
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<?> changeUser(@AuthenticationPrincipal User user,@RequestBody UsersPrivatDTO usersDto){
+        return usersService.changeInfo(user, usersDto);
     }
 
     /**

@@ -3,6 +3,7 @@ package ru.netcracker.studentsummer2021.goodsmarketplace.service.order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.order.OrderPublicDTO;
+import ru.netcracker.studentsummer2021.goodsmarketplace.models.Status;
 
 public interface OrderService {
 
@@ -16,7 +17,7 @@ public interface OrderService {
 
     ResponseEntity<?> changeInfo(User user, OrderPublicDTO orderPublicDTO);
 
-    ResponseEntity<?> changeStatus(User user, Long orderId, String status);
+    ResponseEntity<?> changeStatus(User user, Long orderId, Status status);
 
     ResponseEntity<?> delete(Long orderId);
 

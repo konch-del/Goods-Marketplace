@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import ru.netcracker.studentsummer2021.goodsmarketplace.models.Status;
+
 import java.util.GregorianCalendar;
 
 @Setter
@@ -19,7 +21,7 @@ public class OrderPublicDTO {
     private GregorianCalendar deliveryDate;
     private String address;
     private String comm;
-    private String status;
+    private Status status;
     private GregorianCalendar dateCreated;
 
 }

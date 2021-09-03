@@ -22,7 +22,7 @@ public interface UsersService {
 
     ResponseEntity<?> changeActivation(Long userId, Integer active);
 
-    ResponseEntity<?> changeInfo(UsersPrivatDTO userDTO);
+    ResponseEntity<?> changeInfo(User user, UsersPrivatDTO userDTO);
 
     ResponseEntity<?> changeEmail(User activeUser, String password, String newEmail);
 
