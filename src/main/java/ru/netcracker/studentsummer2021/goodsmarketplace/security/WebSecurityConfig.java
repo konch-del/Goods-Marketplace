@@ -4,22 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer{
     private final UserDetailsService userDetailsService;
 
     @Autowired
@@ -28,23 +26,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     }
 
     @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/login").setViewName("login");
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //Corps
-        http.authorizeRequests().antMatchers("/**").permitAll();
-        /*http
+        http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/users/save").permitAll()
+                .antMatchers(
+                        "/js/**", "/css/**"
+                ).permitAll()
+                //.antMatchers("/").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()
+                .loginPage("/login")
                 .and()
                 .logout()
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID");
-        http
+        /*http
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
@@ -54,13 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .and()
                 .httpBasic();*/
     }
-    //Corps
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000/")
-                .allowedMethods("*");
-    }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -79,5 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return daoAuthenticationProvider;
     }
+
+
 
 }
