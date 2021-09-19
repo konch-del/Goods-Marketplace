@@ -24,6 +24,11 @@ public class UsersController {
         this.usersService = usersService;
     }
 
+    @GetMapping("/whoAmI")
+    public ResponseEntity<?> whoAmI(@AuthenticationPrincipal User user){
+        return usersService.whoAmI(user);
+    }
+
     /**
      * Создает нового пользователя
      * @param usersDto JSON-обект пользователя
@@ -39,7 +44,7 @@ public class UsersController {
      * @return информацию о всех пользователях
      */
     @GetMapping("/findAll")
-    //@PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> findAllUsers() {
         return usersService.findAll();
     }
@@ -50,7 +55,7 @@ public class UsersController {
      * @return пользователя
      */
     @GetMapping("/findByLogin")
-    //@PreAuthorize("hasAuthority('user')")
+    @PreAuthorize("hasAuthority('user')")
     public ResponseEntity<?> findByLogin(@RequestParam String username) {
         return usersService.findByUsername(username);
     }
@@ -61,7 +66,7 @@ public class UsersController {
      * @return
      */
     @DeleteMapping("/delete")
-    //@PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> deleteUsers(@RequestParam Long id) {
         return usersService.deleteUser(id);
     }

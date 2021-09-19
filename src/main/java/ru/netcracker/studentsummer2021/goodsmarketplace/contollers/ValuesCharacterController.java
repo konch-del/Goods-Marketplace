@@ -37,13 +37,18 @@ public class ValuesCharacterController {
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<?> delete(@RequestParam Long Id) {
-        return valuesCharacterService.delete(Id);
+    public ResponseEntity<?> delete(@RequestParam Long id) {
+        return valuesCharacterService.delete(id);
     }
 
     @PostMapping("/linkToProduct")
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> linkToProduct(@RequestBody LinkToProductDTO linkToProductDTO){
         return valuesCharacterService.linkToProduct(linkToProductDTO);
+    }
+
+    @GetMapping("/getForCharacter")
+    public ResponseEntity<?> getForCharacter(@RequestParam Long id){
+        return valuesCharacterService.getForCharacter(id);
     }
 }

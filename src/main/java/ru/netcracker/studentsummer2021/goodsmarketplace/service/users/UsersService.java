@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface UsersService {
 
+    ResponseEntity<?> whoAmI(User user);
+
     ResponseEntity<?> saveUser(UsersAdminDTO userDTO);
 
     ResponseEntity<?> deleteUser(Long userId);

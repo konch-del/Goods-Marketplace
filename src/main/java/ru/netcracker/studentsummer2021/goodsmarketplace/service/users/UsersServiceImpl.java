@@ -37,6 +37,11 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         this.shopRepository = shopRepository;
     }
 
+    @Override
+    public ResponseEntity<?> whoAmI(User user) {
+        return new ResponseEntity<>(usersRepository.findByUsername(user.getUsername()).getId() ,HttpStatus.OK);
+    }
+
     /**
      * Сохраняет пользователя в БД
      * @param userDTO объект получений при запросе
@@ -144,9 +149,6 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
      */
     @Override
     public ResponseEntity<?> changeInfo(User user, UsersPrivatDTO userDTO) {
-        if(userDTO.getId() == null || usersRepository.findById(userDTO.getId()).isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         Users users = usersRepository.findByUsername(user.getUsername());
         if(userDTO.getAddress() != null && !userDTO.getAddress().equals("")){
             users.setAddress(userDTO.getAddress());

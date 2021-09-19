@@ -15,4 +15,6 @@ public interface ValuesCharacterService {
     ResponseEntity<?> delete(Long valuesCharacterId);
 
     ResponseEntity<?> linkToProduct(LinkToProductDTO linkToProductDTO);
+
+    ResponseEntity<?> getForCharacter(Long charactId);
 }

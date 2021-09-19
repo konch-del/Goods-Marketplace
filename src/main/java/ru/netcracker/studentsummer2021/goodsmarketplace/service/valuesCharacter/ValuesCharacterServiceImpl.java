@@ -11,7 +11,9 @@ import ru.netcracker.studentsummer2021.goodsmarketplace.repo.CharacteristicRepos
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.ProductValuesCharacterRepository;
 import ru.netcracker.studentsummer2021.goodsmarketplace.repo.ValuesCharacterRepository;
 
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service("valuesCharacterServiceImpl")
 public class ValuesCharacterServiceImpl implements ValuesCharacterService{
@@ -73,5 +75,14 @@ public class ValuesCharacterServiceImpl implements ValuesCharacterService{
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(productValuesCharacterRepository.save(valuesCharacterConverter.fromDTOToProductValuesCharacter(linkToProductDTO)), HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<?> getForCharacter(Long charactId) {
+        return new ResponseEntity<>(
+                valuesCharacterRepository.getForCharacter(charactId).stream()
+                .map(valuesCharacterConverter::fromValuesCharacterToDTO)
+                .collect(Collectors.toList())
+                ,HttpStatus.OK);
     }
 }

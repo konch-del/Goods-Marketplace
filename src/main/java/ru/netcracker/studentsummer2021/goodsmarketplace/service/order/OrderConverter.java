@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.order.OrderAdminDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.dto.order.OrderPublicDTO;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.Order;
+import ru.netcracker.studentsummer2021.goodsmarketplace.models.Status;
 import ru.netcracker.studentsummer2021.goodsmarketplace.models.Users;
 import java.util.GregorianCalendar;
 
@@ -14,7 +15,9 @@ public class OrderConverter {
     public Order fromPublicDTOToOrder(Users user , OrderPublicDTO orderPublicDTO){
         Order order = new Order();
         order.setId(orderPublicDTO.getId());
-        order.setSu(orderPublicDTO.getSuId());
+        if(orderPublicDTO.getSuId() != null){
+            order.setSu(orderPublicDTO.getSuId());
+        }
         if(user.getAccountType().getAuthorities().contains(new SimpleGrantedAuthority("admin"))){
             order.setUser(orderPublicDTO.getUserId());
         }else{
@@ -25,7 +28,7 @@ public class OrderConverter {
         order.setDateCreated(new GregorianCalendar());
         order.setDeliveryDate(orderPublicDTO.getDeliveryDate());
         order.setMark(orderPublicDTO.getMark());
-        order.setStatus(orderPublicDTO.getStatus());
+        order.setStatus(Status.Сreated);
         order.setModDateOS(new GregorianCalendar());
         order.setModifiedDate(new GregorianCalendar());
         return order;

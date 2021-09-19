@@ -74,6 +74,7 @@ public class CharacteristicServiceImpl implements CharacteristicService {
 
     public Set<Long> getFilteredId(Map<String, String> charact){
         Set<String> character = charact.keySet();
+
         return characteristicRepository.getFilter(character)
                 .stream()
                 .filter(x -> x.getValue().equals(charact.get(x.getCharact())))

@@ -14,6 +14,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "SELECT * FROM product WHERE product_id IN (?1) AND manufacturer_id = ?2", nativeQuery = true)
     List<Long> getProductInManufacturer(Set<Long> productsId, String manufacturerId);
 
+    @Query(value = "SELECT * FROM product WHERE product_id IN (?1) AND category_id = ?2", nativeQuery = true)
+    List<Long> getProductInCategory(Set<Long> productsId, String categoryId);
+
+    @Query(value = "SELECT * FROM product WHERE category_id = ?1", nativeQuery = true)
+    List<Long> getAllProductInCategory(String categoryId);
+
+    @Query(value = "SELECT * FROM product WHERE manufacturer_id = ?1", nativeQuery = true)
+    List<Long> getAllProductInManufacturer(String manufacturerId);
+
     @Query(value = "SELECT * " +
             "FROM PRODUCT " +
             "WHERE PRODUCT_ID IN (" +
@@ -31,6 +40,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query(value = "SELECT * " +
             "FROM PRODUCT p " +
-            "WHERE UPPER(p.PRODUCT_NAME || ' ' || p.ARTICLE || ' ' || p.PRODUCT_MODEL) LIKE %?1% ", nativeQuery = true)
+            "WHERE UPPER(p.PRODUCT_NAME || ' ' || p.ARTICLE || ' ' || p.PRODUCT_MODEL) LIKE %?1%", nativeQuery = true)
     List<Product> search(String name);
 }

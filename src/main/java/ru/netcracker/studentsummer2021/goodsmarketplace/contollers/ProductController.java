@@ -49,12 +49,12 @@ public class ProductController {
         return productService.getProduct(id);
     }
 
-    @GetMapping("/getInCategory")
+    @PostMapping("/getInCategory")
     public ResponseEntity<?> getInCategory(@RequestBody Map<String, String> charact){
         return productService.getProductInCategory(charact);
     }
 
-    @GetMapping("/getInManufacturer")
+    @PostMapping("/getInManufacturer")
     public ResponseEntity<?> getInManufacturer(@RequestBody Map<String, String> charact){
         return productService.getProductInManufacturer(charact);
     }

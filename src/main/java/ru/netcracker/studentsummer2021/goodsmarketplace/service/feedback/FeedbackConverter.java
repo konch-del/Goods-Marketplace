@@ -18,7 +18,7 @@ public class FeedbackConverter {
         feedback.setUserId(feedbackDTO.getUserId());
         feedback.setRating(feedbackDTO.getRating());
         feedback.setText(feedbackDTO.getText());
-        feedback.setVisibility(feedbackDTO.getVisibility());
+        feedback.setVisibility(1);
         feedback.setDateCreated(new GregorianCalendar());
         return feedback;
     }

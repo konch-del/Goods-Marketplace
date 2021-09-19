@@ -20,6 +20,6 @@ public interface ManufacturerRepository extends JpaRepository<Manufacturer, Long
     @Query(value = "UPDATE manufacturer SET id_picture = null WHERE manufacturer_id = ?1", nativeQuery = true)
     void deletePicture(Long manufacturerId);
 
-    @Query(value = "SELECT * FROM manufacturer WHERE UPPER(manufacturer_name) LIKE ?1%", nativeQuery = true)
+    @Query(value = "SELECT * FROM manufacturer WHERE UPPER(manufacturer_name) LIKE %?1%", nativeQuery = true)
     List<Manufacturer> search(String name);
 }

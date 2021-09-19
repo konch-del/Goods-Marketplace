@@ -23,10 +23,7 @@ import ru.netcracker.studentsummer2021.goodsmarketplace.service.manufacturer.Man
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("productServiceImpl")
@@ -124,7 +121,12 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.getById(productId);
         CategoryDTO categoryDTO = categoryConverter.fromCategoryToDTO(categoryRepository.getById(product.getCategory()));
         ManufacturerDTO manufacturerDTO = manufacturerConverter.fromManufacturerToDTO(manufacturerRepository.getById(product.getManufacturer()));
-        PictureProduct picture = pictureProduct.findByProductId(product.getId()).get(0);
+        PictureProduct picture = new PictureProduct();
+        if(!pictureProduct.findByProductId(product.getId()).isEmpty()) {
+            picture = pictureProduct.findByProductId(product.getId()).get(0);
+        }else{
+            picture = null;
+        }
         return new ResponseEntity<>(productConverter.fromProductToPublicDTO(product, categoryDTO, manufacturerDTO, picture), HttpStatus.OK);
     }
 
@@ -133,21 +135,35 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.getById(productId);
         CategoryDTO categoryDTO = categoryConverter.fromCategoryToDTO(categoryRepository.getById(product.getCategory()));
         ManufacturerDTO manufacturerDTO = manufacturerConverter.fromManufacturerToDTO(manufacturerRepository.getById(product.getManufacturer()));
-        PictureProduct picture = pictureProduct.findByProductId(product.getId()).get(0);
+        PictureProduct picture = new PictureProduct();
+        if(!pictureProduct.findByProductId(product.getId()).isEmpty()){
+            picture = pictureProduct.findByProductId(product.getId()).get(0);
+        }
         return productConverter.fromProductToPublicDTO(product, categoryDTO, manufacturerDTO, picture);
     }
 
     @Override
     public ResponseEntity<?> getProductInCategory(Map<String, String> charact) {
-        return characteristicServiceImpl.filter(charact);
+        String categoryId = charact.get("categoryId");
+        charact.keySet().removeIf(x -> x.equals("categoryId"));
+        if(charact.isEmpty()){
+            return new ResponseEntity<>(productRepository.getAllProductInCategory(categoryId), HttpStatus.OK);
+        }else {
+            Set<Long> productsId = characteristicServiceImpl.getFilteredId(charact);
+            return new ResponseEntity<>(productRepository.getProductInCategory(productsId, categoryId), HttpStatus.OK);
+        }
     }
 
     @Override
     public ResponseEntity<?> getProductInManufacturer(Map<String, String> charact) {
         String manufacturerId = charact.get("manufacturerId");
         charact.keySet().removeIf(x -> x.equals("manufacturerId"));
-        Set<Long> productsId = characteristicServiceImpl.getFilteredId(charact);
-        return new ResponseEntity<>(productRepository.getProductInManufacturer(productsId, manufacturerId), HttpStatus.OK);
+        if(charact.isEmpty()){
+            return new ResponseEntity<>(productRepository.getAllProductInManufacturer(manufacturerId), HttpStatus.OK);
+        }else {
+            Set<Long> productsId = characteristicServiceImpl.getFilteredId(charact);
+            return new ResponseEntity<>(productRepository.getProductInManufacturer(productsId, manufacturerId), HttpStatus.OK);
+        }
     }
 
     @Override
@@ -171,7 +187,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseEntity<?> search(String search) {
-        List<ProductPublicDTO> products = productRepository.search(search)
+        List<ProductPublicDTO> products = productRepository.search(search.toUpperCase(Locale.ROOT))
                 .stream()
                 .map(s -> getProductDTO(s.getId()))
                 .collect(Collectors.toList());
@@ -229,8 +245,11 @@ public class ProductServiceImpl implements ProductService {
         if(pictureProduct.findByProductId(productId).isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<String> pictures = pictureProduct.findByProductId(productId).stream()
-                .map((s) -> pictureProduct.getById(s.getId()).getPicture())
+        List<Long> pictures = pictureProduct.findByProductId(productId).stream()
+                .map((s) -> s.getId())
+                .collect(Collectors.toList());
+                //.stream()
+                //.map((s) -> pictureProduct.getById(s.getId()).getPicture())
                 /*.map((s) -> {
                     try {
                         return Files.readAllBytes(s.toPath());
@@ -239,7 +258,7 @@ public class ProductServiceImpl implements ProductService {
                     }
                     return new byte[0];
                 })*/
-                .collect(Collectors.toList());
+                //.collect(Collectors.toList());
         return new ResponseEntity<>(pictures, HttpStatus.OK);
 
     }
