@@ -28,7 +28,7 @@ public class OrderConverter {
         order.setDateCreated(new GregorianCalendar());
         order.setDeliveryDate(orderPublicDTO.getDeliveryDate());
         order.setMark(orderPublicDTO.getMark());
-        order.setStatus(Status.Сreated);
+        order.setStatus(Status.CREATED);
         order.setModDateOS(new GregorianCalendar());
         order.setModifiedDate(new GregorianCalendar());
         return order;

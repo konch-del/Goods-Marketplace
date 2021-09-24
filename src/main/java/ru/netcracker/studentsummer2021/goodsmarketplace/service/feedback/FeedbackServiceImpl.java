@@ -92,14 +92,12 @@ public class FeedbackServiceImpl implements FeedbackService{
         }
         if(user.getAuthorities().contains(new SimpleGrantedAuthority("admin"))){
             feedbacks.forEach(feedback -> {if(feedback.isVisibility().equals(1)) feedbacks.remove(feedback);});
-            return new ResponseEntity<>(feedbacks.stream().map(feedbackConverter::fromFeedbackToDTO), HttpStatus.OK);
+
         }else{
             feedbacks.forEach(feedback -> {if(feedback.isVisibility().equals(0)) feedbacks.remove(feedback);});
-            return new ResponseEntity<>(
-                    feedbacks.stream().map(feedbackConverter::fromFeedbackToDTO),
-                    HttpStatus.OK
-            );
+
         }
+        return new ResponseEntity<>(feedbacks.stream().map(feedbackConverter::fromFeedbackToDTO), HttpStatus.OK);
     }
 
     @Override

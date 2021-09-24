@@ -24,6 +24,7 @@ public class Order {
     @Column
     private String comm;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "order_status")
     private Status status;
 

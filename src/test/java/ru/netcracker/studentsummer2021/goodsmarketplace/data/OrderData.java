@@ -17,7 +17,7 @@ public class OrderData {
         order.setDeliveryDate(new GregorianCalendar());
         order.setAddress("abc");
         order.setComm("qwerty");
-        order.setStatus(Status.Сreated);
+        order.setStatus(Status.CREATED);
         order.setDateCreated(new GregorianCalendar());
         order.setModifiedDate(new GregorianCalendar());
         order.setModDateOS(new GregorianCalendar());
@@ -30,7 +30,7 @@ public class OrderData {
         order2.setDeliveryDate(new GregorianCalendar());
         //order2.setAddress("abc");
         order2.setComm("qwerty");
-        order2.setStatus(Status.Сreated);
+        order2.setStatus(Status.CREATED);
         order2.setDateCreated(new GregorianCalendar());
         order2.setModifiedDate(new GregorianCalendar());
         order2.setModDateOS(new GregorianCalendar());
@@ -43,7 +43,7 @@ public class OrderData {
         order3.setDeliveryDate(new GregorianCalendar());
         order3.setAddress("abc");
         order3.setComm("qwerty12345");
-        order3.setStatus(Status.Сreated);
+        order3.setStatus(Status.CREATED);
         order3.setDateCreated(new GregorianCalendar());
         order3.setModifiedDate(new GregorianCalendar());
         order3.setModDateOS(new GregorianCalendar());

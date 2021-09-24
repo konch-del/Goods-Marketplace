@@ -14,6 +14,7 @@ public class Characteristic {
     @Column(name = "character_name")
     private String name;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "type_character")
     private Type type;
 
