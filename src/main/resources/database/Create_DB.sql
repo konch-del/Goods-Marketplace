@@ -1,8 +1,8 @@
 CREATE TABLE Category_
 (
-	Category_ID          INTEGER  NOT NULL ,
-	Parent_ID            INTEGER  NULL ,
-	Category_name        VARCHAR2(100)  NOT NULL 
+    Category_ID          INTEGER  NOT NULL ,
+    Parent_ID            INTEGER  NULL ,
+    Category_name        VARCHAR2(100)  NOT NULL
 );
 
 CREATE UNIQUE INDEX XPKCategory ON Category_
@@ -16,7 +16,7 @@ CREATE TABLE Characteristic
 	Charact_ID           INTEGER  NOT NULL ,
 	Character_name       VARCHAR2(300)  NOT NULL ,
 	Type_character       VARCHAR2(10)  NOT NULL ,
-	Category_ID          INTEGER  NOT NULL 
+	Category_ID          INTEGER  NOT NULL
 );
 
 CREATE UNIQUE INDEX XPKCharacteristic ON Characteristic
@@ -30,7 +30,7 @@ CREATE TABLE Manufacturer
 	Manufacturer_ID      INTEGER  NOT NULL ,
 	Manufacturer_name    VARCHAR2(70)  NOT NULL ,
 	Desc_                VARCHAR2(1000)  NULL ,
-	ID_picture           VARCHAR2(500)  NULL 
+	ID_picture           VARCHAR2(500)  NULL
 );
 
 CREATE UNIQUE INDEX XPKManufacturer ON Manufacturer
@@ -46,14 +46,14 @@ CREATE TABLE Users_
 	Username             VARCHAR2(50)  NOT NULL ,
 	Pass                 VARCHAR2(300)  NOT NULL ,
 	FCS                  VARCHAR2(300)  NOT NULL ,
-	City                 INTEGER  NOT NULL ,
+	City                 VARCHAR2(200)  NOT NULL ,
 	Address              VARCHAR2(200)  NULL ,
 	Email                VARCHAR2(100)  NOT NULL ,
 	Phone_number         VARCHAR(12)  NOT NULL ,
 	Date_of_Creation     DATE  NOT NULL ,
 	Last_login_date      DATE  NOT NULL ,
 	Activation           SMALLINT  NOT NULL ,
-	Shop_ID              INTEGER  NULL 
+	Shop_ID              INTEGER  NULL
 );
 
 CREATE UNIQUE INDEX XPKUsers ON Users_
@@ -74,7 +74,7 @@ CREATE TABLE Order_
 	Modified_date        DATE  NOT NULL ,
 	Modified_date_OS     DATE  NOT NULL ,
 	User_ID              INTEGER  NOT NULL ,
-	SU_ID                INTEGER  NOT NULL 
+	SU_ID                INTEGER  NOT NULL
 );
 
 CREATE UNIQUE INDEX XPKOrder ON Order_
@@ -93,7 +93,7 @@ CREATE TABLE Shop
 	Work_time            VARCHAR2(200)  NULL ,
 	Address              VARCHAR2(200)  NULL ,
 	Date_create          DATE  NOT NULL ,
-	Modified_date        DATE  NOT NULL 
+	Modified_date        DATE  NOT NULL
 );
 
 CREATE UNIQUE INDEX XPKShop ON Shop
@@ -115,7 +115,7 @@ CREATE TABLE Product
 	Date_creation        DATE  NOT NULL ,
 	Modified_date        DATE  NOT NULL ,
 	Category_ID          INTEGER  NULL ,
-	Manufacturer_ID      INTEGER  NULL 
+	Manufacturer_ID      INTEGER  NULL
 );
 
 CREATE UNIQUE INDEX XPKProduct ON Product
@@ -129,7 +129,7 @@ CREATE TABLE Picture_product
 	PP_ID                INTEGER  NOT NULL ,
 	Picture_ID           VARCHAR(500),
 	Date_created         DATE  NOT NULL ,
-	Product_ID           INTEGER  NOT NULL 
+	Product_ID           INTEGER  NOT NULL
 );
 
 CREATE UNIQUE INDEX XPKPicture_product ON Picture_product
@@ -147,7 +147,7 @@ CREATE TABLE Feedback_
 	Date_created         DATE  NOT NULL ,
 	User_ID              INTEGER  NOT NULL ,
 	Product_ID           INTEGER  NOT NULL ,
-	Order_ID             INTEGER  NOT NULL 
+	Order_ID             INTEGER
 );
 
 CREATE UNIQUE INDEX XPKFeedback ON Feedback_
@@ -166,7 +166,7 @@ CREATE TABLE Sales_unit
 	Date_created         DATE  NOT NULL ,
 	Modified_date        DATE  NOT NULL ,
 	Shop_ID              INTEGER  NOT NULL ,
-	Product_ID           INTEGER  NOT NULL 
+	Product_ID           INTEGER  NOT NULL
 );
 
 CREATE UNIQUE INDEX XPKSales_unit ON Sales_unit
@@ -179,7 +179,7 @@ CREATE TABLE Values_character
 (
 	VC_ID                INTEGER  NOT NULL ,
 	Val                  VARCHAR2(500)  NOT NULL ,
-	Charact_ID           INTEGER  NOT NULL ,
+	Charact_ID           INTEGER  NOT NULL
 );
 
 CREATE UNIQUE INDEX XPKValues_character ON Values_character
@@ -192,7 +192,7 @@ CREATE TABLE Product_Values_character
 (
 	PVC_ID INTEGER NOT NULL,
 	Product_ID           INTEGER  NOT NULL ,
-	VC_ID                INTEGER  NOT NULL 
+	VC_ID                INTEGER  NOT NULL
 );
 
 CREATE UNIQUE INDEX XPKProduct_Values_character ON Product_Values_character
