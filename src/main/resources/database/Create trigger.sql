@@ -1,5 +1,5 @@
 CREATE TRIGGER modifyDateOrder
-AFTER UPDATE OF delivery_mark, delivery_date, address, comm, su_id, shop_id, product_id
+AFTER UPDATE OF delivery_mark, delivery_date, address, comm, su_id
 ON order_
 BEGIN
     UPDATE order_ SET modified_date = TIMESTAMP() WHERE order_id = NEW.order_id;
@@ -16,12 +16,25 @@ BEGIN
     END IF;
 END;
 
-CREATE TRIGGER modifyDateProduct
-AFTER UPDATE 
-ON product
-BEGIN
-    UPDATE product SET modified_date = TIMESTAMP() WHERE product_id = NEW.product_id;
-END;
+CREATE or replace TRIGGER modifyDateProduct
+    FOR UPDATE of desc_, article, product_model, weight, dimensions, date_released, category_id, manufacturer_id  ON product
+    compound trigger
+    bUpdPainters  boolean;
+    pId number;
+before each row is
+begin
+    if :NEW.PRODUCT_ID IS NOT NULL then
+        bUpdPainters := true;
+        pId := :NEW.product_id;
+    end if;
+end before each row;
+    after statement is
+    begin
+        if bUpdPainters then
+            UPDATE product SET modified_date = CURRENT_DATE WHERE product_id = pId;
+        end if;
+    end after statement;
+    end modifyDateProduct;
 
 CREATE TRIGGER modifyDateSU
 AFTER UPDATE 
@@ -36,7 +49,7 @@ ON shop
 BEGIN
     UPDATE shop SET modified_date = TIMESTAMP() WHERE shop_id = NEW.shop_id;
 END;
-
+//Проверить
 CREATE TRIGGER checkorder
 BEFORE DELETE
 ON shop
@@ -46,10 +59,10 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20000,'There are open orders');
     END IF;
 END;
-
+//Проверить
 CREATE TRIGGER minusSU
 AFTER INSERT
 ON order_
 BEGIN
-    UPDATE sales_unit SET uantity = quantity - 1 WHERE su_id = NEW.su_id AND shop_id = NEW.shop_id AND product_id = NEW.product_if;
+    UPDATE sales_unit SET quantity = quantity - 1 WHERE su_id = NEW.su_id AND shop_id = NEW.shop_id AND product_id = NEW.product_if;
 END;
